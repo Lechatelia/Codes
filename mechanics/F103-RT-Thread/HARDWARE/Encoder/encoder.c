@@ -2,7 +2,7 @@
 #include "encoder.h"
 extern 		u32 KeyValue;   //按键值
 int16_t r_now;
-TIM_TypeDef* Tim_S=TIM2;
+TIM_TypeDef* Tim_S=TIM4;
 uint16_t CPR;
 
 struct Encoder_Stat Encoders={0, 0, 0, 1, 1, 1,0};
@@ -20,42 +20,42 @@ void QEI_Init(void)
 	*/
 	/* enable the periph clock */
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3 | RCC_APB1Periph_TIM4, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA , ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB , ENABLE);
 
 	/* configue IO */
 	// configue CH1 & CH2 IO
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 ;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	/* configue timer */
 	// configue CH1****TIM3****
-	TIM_DeInit(TIM2);		
+	TIM_DeInit(TIM4);		
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x0; 
 	TIM_TimeBaseStructure.TIM_Period = CPR-1; 			
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; 
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-	TIM_EncoderInterfaceConfig(TIM2, TIM_EncoderMode_TI12,TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+	TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12,TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
 	
 	TIM_ICStructInit(&TIM_ICInitStructure);
 	TIM_ICInitStructure.TIM_ICFilter = (u8)0;
-	TIM_ICInit(TIM2, &TIM_ICInitStructure);
+	TIM_ICInit(TIM4, &TIM_ICInitStructure);
 
-	TIM_ClearFlag(TIM2, TIM_FLAG_Update);
+	TIM_ClearFlag(TIM4, TIM_FLAG_Update);
 
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+	TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
 	
 	/* reset the timer3   */
-	TIM2->CNT = (u16)0;
+	TIM4->CNT = (u16)0;
 
 	/* enable the timer3 */
-	TIM_Cmd(TIM2, ENABLE);
+	TIM_Cmd(TIM4, ENABLE);
 	
-	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority= 2;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -63,7 +63,7 @@ void QEI_Init(void)
 	
 }
 
-void TIM2_GPIO_Config(void)
+void TIM4_GPIO_Config(void)
  {
 	 GPIO_InitTypeDef GPIO_InitStructure;
 	 
@@ -84,10 +84,10 @@ int32_t Int32Abs(int32_t Data)
 	else 
 		return Data;
 }
-void TIM2_IRQHandler(void)
+void TIM4_IRQHandler(void)
 {
-	TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
-    if(!(TIM2->CR1&0x0010))
+	TIM_ClearITPendingBit(TIM4,TIM_IT_Update);
+    if(!(TIM4->CR1&0x0010))
     {/* count up overflow interrupt */
         //Com_Printf("up overflow\n\r");
         r_now++;
@@ -141,39 +141,39 @@ void Encoder_Init(void)
 }
  
 
-//后期通过Tim3更新码盘参数    不用系统滴答定时器
-void TIM3_Int_Init(void)        //1ms一次中断
+//后期通过Tim6基本定时器更新码盘参数    不用系统滴答定时器
+void TIM6_Int_Init(void)        //1ms一次中断
 {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); //时钟使能
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE); //时钟使能
 	
 	//定时器TIM3初始化
 	TIM_TimeBaseStructure.TIM_Period = 999; //设置在下一个更新事件装入活动的自动重装载寄存器周期的值	
 	TIM_TimeBaseStructure.TIM_Prescaler =71; //设置用来作为TIMx时钟频率除数的预分频值
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //设置时钟分割:TDTS = Tck_tim
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式  //基本定时器只能向上计数
+	TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
  
-	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE ); //使能指定的TIM3中断,允许更新中断
+	TIM_ITConfig(TIM6,TIM_IT_Update,ENABLE ); //使能指定的TIM3中断,允许更新中断
 
 	//中断优先级NVIC设置
-	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;  //TIM3中断
+	NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;  //TIM3中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //先占优先级0级
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;  //从优先级3级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //初始化NVIC寄存器
 
 
-	TIM_Cmd(TIM3, ENABLE);  //使能TIMx					 
+	TIM_Cmd(TIM6, ENABLE);  //使能TIMx					 
 }
 //定时器3中断服务程序
-void TIM3_IRQHandler(void)   //TIM3中断
+void TIM6_IRQHandler(void)   //TIM3中断
 {
-	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
+	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
 		{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
+		TIM_ClearITPendingBit(TIM6, TIM_IT_Update  );  //清除TIMx更新中断标志 
 		Encoder_Update(); 
 		}
 }
@@ -218,7 +218,7 @@ void Encoder_Configuration(void)
   RCC_Configuration();
 	QEI_Init();   //码盘引脚初始化
 	Encoder_Init();  //参数初始化
-	TIM3_Int_Init();          //更新码盘参数初始化
-	TIM2_GPIO_Config();   //拉低PA4，只有队里的协主控需求
+	TIM6_Int_Init();          //更新码盘参数初始化
+	//TIM4_GPIO_Config();   //拉低PA4，只有队里的协主控需求
 }
 

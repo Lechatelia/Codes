@@ -19,7 +19,7 @@ void Encoder_Update(void);
 void Encoder_Init(void);
 void QEI_Init (void);
 void TIM3_Int_Init(void);
-void TIM2_GPIO_Config(void);
+void TIM4_GPIO_Config(void);
 void RCC_Configuration(void);
 void Encoder_Configuration(void);
 #endif

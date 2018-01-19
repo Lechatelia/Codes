@@ -90,7 +90,7 @@ u16 Dval;		//下降沿时计数器的值
 u32 RmtRec=0;	//红外接收到的数据	   		    
 u8  RmtCnt=0;	//按键按下的次数	  
 //定时器4中断服务程序	 
-void TIM4_IRQHandler(void)
+void TIM4_IRQHandler_for_remote(void)  //因为和码盘定时器冲突所以更名
 { 		    	 
  
 	if(TIM_GetITStatus(TIM4,TIM_IT_Update)!=RESET)

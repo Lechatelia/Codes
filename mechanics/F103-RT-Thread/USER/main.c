@@ -6,7 +6,9 @@
 #include "led.h"
 #include "remote.h"
 #include "encoder.h"
+#include "motor.h"
 #include <rtthread.h>
+#include "Servo.h"
 //#include "stm32f10x.h"
  
  
@@ -61,6 +63,8 @@ int main(void)
   	//USART1_DMA_Init(); //uart1初始化
 	  USART3_DMA_Init();  //uart3初始化
 	  Encoder_Configuration();//码盘初始化
+	  DC_Motor_init_motor(); //直流电机初始化
+		Servo_init(900);//舵机初始化  需注意这里需要初始化就为0度
     // 创建静态线程
     rt_thread_init(&led0_thread,              		//线程控制块
                    "led0",                    		//线程名字，在shell里面可以看到

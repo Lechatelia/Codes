@@ -1,76 +1,7 @@
 #include "Step_Motor.h"
 #include "delay.h"
 #include "led.h"
-/*
-void Step_Motor_Init()
-{
-	GPIO_InitTypeDef GPIO_InitStructure;	
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
-	//STEP_MOROR
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2|GPIO_Pin_3;
-	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA,&GPIO_InitStructure);
-}
 
-void dianji_1(float m,int v)
-{
-   int n=0,k=0;
-   k=(int)m;
-	
-		if(k==0)
-		{
-			STEP_L_1;
-		}
-		else
-		{
-			if(k>0)
-			{
-				DIR_ZHENG_1;
-			}
-			if(k<0)
-			{
-				DIR_FAN_1;
-			}
-			for(n=0;n<__fabs(k);n++)
-			{
-				STEP_H_1;
-				delay_us(1000000/v);
-				STEP_L_1;
-				delay_us(1000000/v);
-			}
-	  }
-}
-
-void dianji_2(float m,int v)
-{
-   int n=0,k=0;
-   k=(int)m;
-	
-		if(k==0)
-		{
-			STEP_L_2;
-		}
-		else
-		{
-			if(k>0)
-			{
-				DIR_ZHENG_2;
-			}
-			if(k<0)
-			{
-				DIR_FAN_2;
-			}
-			for(n=0;n<__fabs(k);n++)
-			{
-				STEP_H_2;
-				delay_us(1000000/v);
-				STEP_L_2;
-				delay_us(1000000/v);
-			}
-	  }
-}
-*/
 
 int step_num_1=0;//步进电机步数
 int step_num_2=0;//步进电机步数
@@ -78,7 +9,9 @@ u8 unlimit_flag_1=0;
 u8 unlimit_flag_2=0;
 long step_spot_1=0;//步进电机当前位置
 long step_spot_2=0;//步进电机当前位置
-void TIM3_Init(void)                         //定时器初始化，步进电机的定时器
+
+//PA2 TIM5-CH3
+void TIM5_Init(void)                         //定时器初始化，步进电机的定时器
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -86,19 +19,19 @@ void TIM3_Init(void)                         //定时器初始化，步进电机的定时器
 	NVIC_InitTypeDef NVIC_InitStructure;
 
   /* TIM5 clock enable */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  //使能GPIO外设时钟使能
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2; 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //复用推挽输出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	 /* Enable the TIM3 gloabal Interrupt */
 
-  NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 	
@@ -108,19 +41,19 @@ void TIM3_Init(void)                         //定时器初始化，步进电机的定时器
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
-  TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+  TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
 
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = 50-1;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
 
-  TIM_OC1Init(TIM3, &TIM_OCInitStructure);
-  TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
+  TIM_OC3Init(TIM5, &TIM_OCInitStructure);
+  TIM_OC3PreloadConfig(TIM5, TIM_OCPreload_Enable);
 
-	TIM_ARRPreloadConfig(TIM3, ENABLE);
-  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-  TIM_Cmd(TIM3, ENABLE);
+	TIM_ARRPreloadConfig(TIM5, ENABLE);
+  TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
+  TIM_Cmd(TIM5, ENABLE);
 	
 }
 
