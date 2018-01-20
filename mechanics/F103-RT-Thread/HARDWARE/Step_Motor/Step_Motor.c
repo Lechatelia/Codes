@@ -239,6 +239,7 @@ void step_motor_2(long num)//dir=0,向左，负的
 	
 }
 
+//用于大的步进电机，按照参数的正负确定旋转方向，为0时停止转动
 void step_motor_3(long num)//dir=0,向左，负的
 {
 	
@@ -255,7 +256,7 @@ void step_motor_3(long num)//dir=0,向左，负的
 		GPIO_SetBits(GPIOA,GPIO_Pin_7);
 		TIM_Cmd(TIM1, ENABLE);
 	}
-	else
+	else      //
 	{
 		 TIM_Cmd(TIM1, DISABLE);//关闭PWM波
 	}

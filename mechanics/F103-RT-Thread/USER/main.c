@@ -42,20 +42,7 @@ static void led0_thread_entry(void* parameter)
 		LED0=1;  
 		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
 
-//	switch(key_number)            //DC_Motor测试代码，变量通过按键更改
-//			{
-//					case 0:
-//					setspeed_motor1(stop,500);
-//				  break;
-//				case 1:
-//					setspeed_motor1(backward,500);
-//					break;
-//				case 2:
-//					setspeed_motor1(stop,500);	
-//					break;
-//				default:
-//					setspeed_motor1(stop,500);
-//			}
+
 		  if(exti_flag==1)
 			{
 				exti_flag=0;
@@ -63,24 +50,24 @@ static void led0_thread_entry(void* parameter)
 					{
 						case 0:
 							step_motor_1(10);
-							step_motor_2(10);
+							step_motor_2(10);       //步进电机
 						  step_motor_3(0);
-							set_Servp_angle(45);
-							setspeed_motor1(stop,999);
-							break;
+							set_Servp_angle(45);      //舵机
+							setspeed_motor1(stop,99,50000);  //直线电机
+							break;                    
 						case 1:
 							step_motor_1(32000);
 							step_motor_2(32000);
 							step_motor_3(1);
 							set_Servp_angle(0);
-							setspeed_motor1(backward,999);
+							setspeed_motor1(backward,99,50000);
 							break;
 						case 2:
 							step_motor_1(-32000);
 							step_motor_2(-32000);
 						  step_motor_3(-1);
 							set_Servp_angle(90);
-							setspeed_motor1(forward,999);
+							setspeed_motor1(forward,99,50000);
 							
 							break;
 						default:

@@ -177,13 +177,12 @@ void EXTI2_IRQHandler(void)
 * 输    出         : 无
 *******************************************************************************/
 void EXTI4_IRQHandler(void)
-{
-	if(EXTI_GetITStatus(EXTI_Line4)==1)
+{   int i;
+	if(EXTI_GetITStatus(EXTI_Line4)==1&&exti_flag==0) //如果按键信息未处理则不进入
 	{
 	//	delay_ms(10);
 		if(K_RIGHT==0)
 		{
-			
       key_number=(key_number+1)%3;
 			exti_flag=1;
 

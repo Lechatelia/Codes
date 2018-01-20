@@ -3,6 +3,8 @@
 
 enum Motor_Dir motor1_dir=stop; //默认停止
 int delay_flag=0;
+int DC_Motor_flag=0; //电机是否正在移动
+long dc_place=0;      //需要移动的移动位置
 
 void GPIO_init_motor(void)
 {
@@ -20,14 +22,16 @@ void GPIO_init_motor(void)
 	
 
 }
- //比较值从 0到1000变化，速度慢慢增大
+ //比较值从 0到99变化，速度慢慢增大
 void PWM_init_motor( )
 {
 	
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-TIM_OCInitTypeDef  TIM_OCInitStructure;
+		TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+		TIM_OCInitTypeDef  TIM_OCInitStructure;
+		NVIC_InitTypeDef NVIC_InitStructure;
 	  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);    //时钟使能好像一定要在这里
-TIM_TimeBaseStructure.TIM_Period=1000-1;  //0到999刚好1000个数
+
+TIM_TimeBaseStructure.TIM_Period=100-1;  //100us
 TIM_TimeBaseStructure.TIM_Prescaler=72-1; //设定分频值
 TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;
 TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up;
@@ -40,13 +44,14 @@ TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High; //极性为高
 	
 	//设置通道1
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=500;//设置跳变值，此时电平发生跳变
+	TIM_OCInitStructure.TIM_Pulse=0;//设置跳变值，此时电平发生跳变
 	TIM_OC1Init(TIM2,&TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM2,TIM_OCPreload_Enable);
 	
+		
 	//设置通道2
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=500;
+	TIM_OCInitStructure.TIM_Pulse=0;
 	TIM_OC2Init(TIM2,&TIM_OCInitStructure);
 	TIM_OC2PreloadConfig(TIM2,TIM_OCPreload_Enable);
 	
@@ -60,24 +65,62 @@ TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High; //极性为高
 //	TIM_OCInitStructure.TIM_Pulse=0;
 //	TIM_OC4Init(TIM4,&TIM_OCInitStructure);
 //	TIM_OC4PreloadConfig(TIM4,TIM_OCPreload_Enable);
+	  	
+		 
+	    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+			NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+			NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+			NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+			NVIC_Init(&NVIC_InitStructure);
 	
-	TIM_ARRPreloadConfig(TIM2,ENABLE); //使能重载寄存器ARR
+  TIM_ARRPreloadConfig(TIM2,ENABLE); //使能重载寄存器ARR
+	TIM_ClearFlag(TIM2, TIM_FLAG_Update);
+  TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 	TIM_Cmd(TIM2,ENABLE);    //使能定时器
 }
-void setspeed_motor1(enum Motor_Dir dir,int speed)   //改变方向或者速度
+
+void TIM2_IRQHandler(void)                      //控制中断
+{
+	if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
+	{
+		if(DC_Motor_flag==1)  //正在移动
+		{
+		
+		     if(dc_place<=0)
+	      	{
+			      setspeed_motor1(stop,0,0); //不可以关闭定时器，应该是使得两个引脚都输出低电平
+						DC_Motor_flag=0; //电机静止
+						 
+	        }
+	        else
+	      	{
+		        	dc_place--;
+	        }
+    	}
+	}
+	  TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+}
+
+//参数1：方向  ，参数2：速度0~99  参数3：开关周期数，对应着开启时间一个开关周期为0.1ms
+void setspeed_motor1(enum Motor_Dir dir,int speed ,long number)   //改变方向或者速度
 {  
 	if(motor1_dir==dir)        //走向未改变
 	{
 		  if(dir==forward)
 		 {
+			DC_Motor_flag=1;
+			dc_place=number;
 			TIM_SetCompare1(TIM2,speed); 
 		 }
 		 else if(dir==backward)
 		 {
+			DC_Motor_flag=1;
+			dc_place=number;
 			TIM_SetCompare2(TIM2,speed);
 		 }
-		 else
+		 else    //停止
 		 {
+			 DC_Motor_flag=0;
 			 TIM_SetCompare1(TIM2,0);
 			 TIM_SetCompare2(TIM2,0);
 		 }
@@ -86,18 +129,23 @@ void setspeed_motor1(enum Motor_Dir dir,int speed)   //改变方向或者速度
 	{   motor1_dir=dir;  //注意该变量只能在这里改变
 		   if(dir==forward)
 		 {
+			 DC_Motor_flag=1;
+			dc_place=number;
 			TIM_SetCompare2(TIM2,0);
 			TIM7_delay_1ms();
 			TIM_SetCompare1(TIM2,speed); 
 		 }
 		 else if(dir==backward)
 		 {
+			 DC_Motor_flag=1;
+			dc_place=number;
 			TIM_SetCompare1(TIM2,0); 
 		  TIM7_delay_1ms();
 			TIM_SetCompare2(TIM2,speed);
 		 }
 		 else
 		 {
+			 DC_Motor_flag=0;
 			 TIM_SetCompare1(TIM2,0);
 			 TIM_SetCompare2(TIM2,0);
 		 }
@@ -161,5 +209,6 @@ void DC_Motor_init_motor( )
 	 GPIO_init_motor();
 	 PWM_init_motor();
 	 TIM7_Int_Init();
-	//setspeed_motor1(forward,999);
+	DC_Motor_flag=0; //初始状态为未移动状态
+	//setspeed_motor1(forward,99);
 }
