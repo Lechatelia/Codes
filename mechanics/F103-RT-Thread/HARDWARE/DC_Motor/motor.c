@@ -2,6 +2,7 @@
 #include "delay.h"
 
 enum Motor_Dir motor1_dir=stop; //默认停止
+int delay_flag=0;
 
 void GPIO_init_motor(void)
 {
@@ -26,8 +27,8 @@ void PWM_init_motor( )
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
 	  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);    //时钟使能好像一定要在这里
-TIM_TimeBaseStructure.TIM_Period=999;  //0到999刚好1000个数
-TIM_TimeBaseStructure.TIM_Prescaler=71; //设定分频值
+TIM_TimeBaseStructure.TIM_Period=1000-1;  //0到999刚好1000个数
+TIM_TimeBaseStructure.TIM_Prescaler=72-1; //设定分频值
 TIM_TimeBaseStructure.TIM_ClockDivision=TIM_CKD_DIV1;
 TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up;
 //时基初始化完成
@@ -39,13 +40,13 @@ TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High; //极性为高
 	
 	//设置通道1
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=0;//设置跳变值，此时电平发生跳变
+	TIM_OCInitStructure.TIM_Pulse=500;//设置跳变值，此时电平发生跳变
 	TIM_OC1Init(TIM2,&TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM2,TIM_OCPreload_Enable);
 	
 	//设置通道2
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=0;
+	TIM_OCInitStructure.TIM_Pulse=500;
 	TIM_OC2Init(TIM2,&TIM_OCInitStructure);
 	TIM_OC2PreloadConfig(TIM2,TIM_OCPreload_Enable);
 	
@@ -86,14 +87,14 @@ void setspeed_motor1(enum Motor_Dir dir,int speed)   //改变方向或者速度
 		   if(dir==forward)
 		 {
 			TIM_SetCompare2(TIM2,0);
-			delay_ms(1);
+			TIM7_delay_1ms();
 			TIM_SetCompare1(TIM2,speed); 
 		 }
 		 else if(dir==backward)
 		 {
 			TIM_SetCompare1(TIM2,0); 
-			delay_ms(1);
-			TIM_SetCompare1(TIM2,speed);
+		  TIM7_delay_1ms();
+			TIM_SetCompare2(TIM2,speed);
 		 }
 		 else
 		 {
@@ -106,8 +107,59 @@ void setspeed_motor1(enum Motor_Dir dir,int speed)   //改变方向或者速度
 		
 }
 
+//死区时间为了防止系统滴答定时器的混乱使用，这里使用基本定时器tim7
+void TIM7_Int_Init(void)        //1ms一次中断
+{
+  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE); //时钟使能
+	
+	//定时器TIM3初始化
+	TIM_TimeBaseStructure.TIM_Period = 99; //设置在下一个更新事件装入活动的自动重装载寄存器周期的值	
+	TIM_TimeBaseStructure.TIM_Prescaler =72-1; //设置用来作为TIMx时钟频率除数的预分频值
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //设置时钟分割:TDTS = Tck_tim
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式  //基本定时器只能向上计数
+	TIM_TimeBaseInit(TIM7, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
+  
+	TIM_ClearITPendingBit(TIM7, TIM_IT_Update  );
+	TIM_ITConfig(TIM7,TIM_IT_Update,ENABLE ); //使能指定的TIM3中断,允许更新中断
+
+	//中断优先级NVIC设置
+	NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn;  //TIM3中断
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;  //先占优先级0级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;  //从优先级3级
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
+	NVIC_Init(&NVIC_InitStructure);  //初始化NVIC寄存器
+
+
+	TIM_Cmd(TIM7, DISABLE);  //使能TIMx					 
+}
+
+//定时器延时1ms
+ void TIM7_delay_1ms(void)   
+{
+	TIM7->CNT = 0;
+	TIM_Cmd(TIM7, ENABLE);
+	delay_flag=1;
+	while(delay_flag==1);
+	TIM_Cmd(TIM7, DISABLE); 
+}
+//定时器7中断服务程序
+void TIM7_IRQHandler(void)   //TIM3中断
+{
+	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
+		{
+			TIM_ClearITPendingBit(TIM7, TIM_IT_Update  );  //清除TIMx更新中断标志 
+	    delay_flag=0;
+		
+		}
+}
+
 void DC_Motor_init_motor( )
 {
 	 GPIO_init_motor();
 	 PWM_init_motor();
+	 TIM7_Int_Init();
+	//setspeed_motor1(forward,999);
 }

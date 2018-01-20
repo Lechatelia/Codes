@@ -14,10 +14,13 @@
 // void dianji_1(float m,int v);
 // void dianji_2(float m,int v);
 // void Step_Motor_Init();
-void TIM3_Init(void);
-void TIM2_Init(void);
+void TIM1_Init(void); 
+void TIM5_Init(void) ;
+void TIM8_Init(void); 
 void step_dir_init(void);
 void step_motor_1(long num);
 void step_motor_2(long num);
 void unlimit_step_1(void);
 void unlimit_step_2(void);
+void unlimit_step_3(void);
+void Step_Motor_Init(void);

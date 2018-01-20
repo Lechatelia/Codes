@@ -9,9 +9,11 @@
 #include "motor.h"
 #include <rtthread.h>
 #include "Servo.h"
+#include "Step_Motor.h"
+#include "exti.h"
 //#include "stm32f10x.h"
  
- 
+  extern int DC_Motor;
 /************************************************
  ALIENTEK战舰STM32开发板实验1
  跑马灯实验 
@@ -39,7 +41,22 @@ static void led0_thread_entry(void* parameter)
         
 		LED0=1;  
 		rt_thread_delay(RT_TICK_PER_SECOND);                //延时 
-	}
+
+//	switch(DC_Motor)            //DC_Motor测试代码，变量通过按键更改
+//			{
+//					case 0:
+//					setspeed_motor1(stop,500);
+//				  break;
+//				case 1:
+//					setspeed_motor1(backward,500);
+//					break;
+//				case 2:
+//					setspeed_motor1(stop,500);	
+//					break;
+//				default:
+//					setspeed_motor1(stop,500);
+//			}
+				}
 }
 
 //线程LED1
@@ -52,19 +69,25 @@ static void led1_thread_entry(void* parameter)
         
 		LED1=1;   
 		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
+		
+		
 	}
 }
 
 
 int main(void)
-{  
-    LED_Init();    	//初始化LED  
+{   
+	  delay_init();  //主要是在中断函数里面用该函数用于防抖
+	  Step_Motor_Init(); //三个步进电机的初始化
+		My_EXTI_Init(); //外部中断初始化，用于步进电机的零点
+    LED_Init();    	//初始化LED
     //Remote_Init() ;  //红外遥控
-  	//USART1_DMA_Init(); //uart1初始化
+  	USART1_DMA_Init(); //uart1初始化
 	  USART3_DMA_Init();  //uart3初始化
 	  Encoder_Configuration();//码盘初始化
 	  DC_Motor_init_motor(); //直流电机初始化
 		Servo_init(900);//舵机初始化  需注意这里需要初始化就为0度
+	
     // 创建静态线程
     rt_thread_init(&led0_thread,              		//线程控制块
                    "led0",                    		//线程名字，在shell里面可以看到
