@@ -40,7 +40,7 @@ void USART3_DMA_Init(void)
 	
 	//DMA_IRQ_Init  USART_RX -> Channel3
 	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
@@ -56,7 +56,7 @@ void USART3_DMA_Init(void)
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;	//源地址的数据长度是8位
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;			//传送的目的地址是8位宽度
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;							//传送模式循环
-	DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;					//优先级设置
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;					//优先级设置
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;							//DMA通道没有设置为内存到内存传送 
 	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
 	

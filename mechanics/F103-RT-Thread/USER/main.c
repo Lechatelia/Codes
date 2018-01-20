@@ -12,8 +12,8 @@
 #include "Step_Motor.h"
 #include "exti.h"
 //#include "stm32f10x.h"
- 
-  extern int DC_Motor;
+  extern int exti_flag ; 
+  extern int key_number;
 /************************************************
  ALIENTEK战舰STM32开发板实验1
  跑马灯实验 
@@ -37,12 +37,12 @@ static void led0_thread_entry(void* parameter)
 	while(1)
 	{
 		LED0=0;  
-		rt_thread_delay(RT_TICK_PER_SECOND);                //延时 
+		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
         
 		LED0=1;  
-		rt_thread_delay(RT_TICK_PER_SECOND);                //延时 
+		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
 
-//	switch(DC_Motor)            //DC_Motor测试代码，变量通过按键更改
+//	switch(key_number)            //DC_Motor测试代码，变量通过按键更改
 //			{
 //					case 0:
 //					setspeed_motor1(stop,500);
@@ -56,7 +56,38 @@ static void led0_thread_entry(void* parameter)
 //				default:
 //					setspeed_motor1(stop,500);
 //			}
-				}
+		  if(exti_flag==1)
+			{
+				exti_flag=0;
+				switch(key_number)            //步进电机+舵机测试代码，变量通过按键更改
+					{
+						case 0:
+							step_motor_1(10);
+							step_motor_2(10);
+						  step_motor_3(0);
+							set_Servp_angle(45);
+							setspeed_motor1(stop,999);
+							break;
+						case 1:
+							step_motor_1(32000);
+							step_motor_2(32000);
+							step_motor_3(1);
+							set_Servp_angle(0);
+							setspeed_motor1(backward,999);
+							break;
+						case 2:
+							step_motor_1(-32000);
+							step_motor_2(-32000);
+						  step_motor_3(-1);
+							set_Servp_angle(90);
+							setspeed_motor1(forward,999);
+							
+							break;
+						default:
+							break;
+					}
+			}
+		}
 }
 
 //线程LED1
@@ -65,9 +96,11 @@ static void led1_thread_entry(void* parameter)
 	while(1)
 	{
 		LED1=0;  
+		//delay_ms(1000);
 		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
         
-		LED1=1;   
+		LED1=1;  
+	  //delay_ms(1000);		
 		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
 		
 		
@@ -76,8 +109,9 @@ static void led1_thread_entry(void* parameter)
 
 
 int main(void)
-{   
-	  delay_init();  //主要是在中断函数里面用该函数用于防抖
+{  
+		RCC_Configuration();    //高速时钟的启用需要放在前面，不然后面uart3的时序会发生紊乱
+	  delay_init();  //主要是在中断函数里面用该函数用于防抖  //该函数已经lechatelia更改  所以时间可能很不准确
 	  Step_Motor_Init(); //三个步进电机的初始化
 		My_EXTI_Init(); //外部中断初始化，用于步进电机的零点
     LED_Init();    	//初始化LED
@@ -109,7 +143,8 @@ int main(void)
                    2,    //线程的优先级
                    20);         				   
 
-	rt_thread_startup(&led1_thread);    
+	rt_thread_startup(&led1_thread);  
+   
 }
 
 

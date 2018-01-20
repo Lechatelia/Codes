@@ -9,8 +9,8 @@ extern long step_num_1;
 extern long step_spot_1;
 extern long step_num_2;
 extern long step_spot_2;
-u8 exti_flag=0;
-int DC_Motor=0; //用于调试直线电机
+int exti_flag=0;       //刚刚产生中断
+int key_number=0; //用于调试
 //extern int flag ;
 
 /*******************************************************************************
@@ -130,7 +130,7 @@ void EXTI3_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line3)==1)
 	{
-		delay_ms(10);
+	///	delay_ms(10);
 		if(K_DOWN==0)
 		{
 		        TIM_Cmd(TIM8, DISABLE);
@@ -154,7 +154,7 @@ void EXTI2_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line2)==1)
 	{
-		delay_ms(10);
+	//	delay_ms(10);
 		if(K_LEFT==0)
 		{
 			  TIM_Cmd(TIM5, DISABLE);
@@ -180,11 +180,12 @@ void EXTI4_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line4)==1)
 	{
-		delay_ms(10);
+	//	delay_ms(10);
 		if(K_RIGHT==0)
 		{
 			
-      DC_Motor=(DC_Motor+1)%3;
+      key_number=(key_number+1)%3;
+			exti_flag=1;
 
 		}
 		

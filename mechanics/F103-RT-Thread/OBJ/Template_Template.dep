@@ -1,5 +1,5 @@
 Dependencies for Project 'Template', Target 'Template': (DO NOT MODIFY !)
-F (.\main.c)(0x5A623195)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x5A631003)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (..\SYSTEM\sys\sys.h)(0x5A620E72)
 I (..\USER\stm32f10x.h)(0x5710FC40)
 I (..\CORE\core_cm3.h)(0x5710FC3E)
@@ -47,7 +47,7 @@ I (D:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F606B8)
 I (D:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include\rtservice.h)(0x590A9138)
 I (D:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include\rtm.h)(0x58C17676)
 I (..\HARDWARE\Servo\Servo.h)(0x5A61B165)
-I (..\HARDWARE\Step_Motor\Step_Motor.h)(0x5A61BAB3)
+I (..\HARDWARE\Step_Motor\Step_Motor.h)(0x5A63037A)
 I (..\HARDWARE\Exti\exti.h)(0x5A620EAD)
 F (.\stm32f10x_it.c)(0x59CDCCD6)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\stm32f10x_it.o --omf_browse ..\obj\stm32f10x_it.crf --depend ..\obj\stm32f10x_it.d)
 I (stm32f10x_it.h)(0x5710FC40)
@@ -141,7 +141,7 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_tim.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x5710FC3F)
-F (..\HARDWARE\Encoder\encoder.c)(0x5A6220CA)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\encoder.o --omf_browse ..\obj\encoder.crf --depend ..\obj\encoder.d)
+F (..\HARDWARE\Encoder\encoder.c)(0x5A62CEF8)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\encoder.o --omf_browse ..\obj\encoder.crf --depend ..\obj\encoder.d)
 I (..\USER\stm32f10x.h)(0x5710FC40)
 I (..\CORE\core_cm3.h)(0x5710FC3E)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
@@ -264,8 +264,8 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_tim.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x5710FC3F)
-F (..\HARDWARE\Step_Motor\Step_Motor.c)(0x5A621C79)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\step_motor.o --omf_browse ..\obj\step_motor.crf --depend ..\obj\step_motor.d)
-I (..\HARDWARE\Step_Motor\Step_Motor.h)(0x5A61BAB3)
+F (..\HARDWARE\Step_Motor\Step_Motor.c)(0x5A6306E4)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\step_motor.o --omf_browse ..\obj\step_motor.crf --depend ..\obj\step_motor.d)
+I (..\HARDWARE\Step_Motor\Step_Motor.h)(0x5A63037A)
 I (..\USER\stm32f10x.h)(0x5710FC40)
 I (..\CORE\core_cm3.h)(0x5710FC3E)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
@@ -297,7 +297,7 @@ I (..\STM32F10x_FWLib\inc\misc.h)(0x5710FC3F)
 I (..\SYSTEM\delay\delay.h)(0x5710FC40)
 I (..\SYSTEM\sys\sys.h)(0x5A620E72)
 I (..\HARDWARE\LED\led.h)(0x5A620DAD)
-F (..\HARDWARE\Exti\exti.c)(0x5A623081)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\exti.o --omf_browse ..\obj\exti.crf --depend ..\obj\exti.d)
+F (..\HARDWARE\Exti\exti.c)(0x5A62FE09)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\exti.o --omf_browse ..\obj\exti.crf --depend ..\obj\exti.d)
 I (..\HARDWARE\Exti\exti.h)(0x5A620EAD)
 I (..\SYSTEM\sys\sys.h)(0x5A620E72)
 I (..\USER\stm32f10x.h)(0x5710FC40)
@@ -330,9 +330,9 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x5710FC3F)
 I (..\SYSTEM\delay\delay.h)(0x5710FC40)
 I (..\HARDWARE\LED\led.h)(0x5A620DAD)
-I (..\HARDWARE\Step_Motor\Step_Motor.h)(0x5A61BAB3)
+I (..\HARDWARE\Step_Motor\Step_Motor.h)(0x5A63037A)
 I (..\HARDWARE\DC_Motor\motor.h)(0x5A6219E4)
-F (..\SYSTEM\delay\delay.c)(0x5710FC40)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\delay.o --omf_browse ..\obj\delay.crf --depend ..\obj\delay.d)
+F (..\SYSTEM\delay\delay.c)(0x5A62D148)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\delay.o --omf_browse ..\obj\delay.crf --depend ..\obj\delay.d)
 I (..\SYSTEM\delay\delay.h)(0x5710FC40)
 I (..\SYSTEM\sys\sys.h)(0x5A620E72)
 I (..\USER\stm32f10x.h)(0x5710FC40)
@@ -455,7 +455,7 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_tim.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h)(0x5710FC3F)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x5710FC3F)
-F (..\SYSTEM\usart\usart_3.c)(0x5A5DA2F9)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\usart_3.o --omf_browse ..\obj\usart_3.crf --depend ..\obj\usart_3.d)
+F (..\SYSTEM\usart\usart_3.c)(0x5A62C925)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\USER -I ..\CORE -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\HARDWARE\LED -I ..\HARDWARE\REMOTE -I ..\HARDWARE\UART -I ..\HARDWARE\Encoder -I ..\HARDWARE\DC_Motor -I ..\HARDWARE\Servo -I ..\HARDWARE\Step_Motor -I ..\HARDWARE\Exti-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS-IE:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template-ID:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-ID:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="522" -D_RTE_ -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\usart_3.o --omf_browse ..\obj\usart_3.crf --depend ..\obj\usart_3.d)
 I (..\SYSTEM\usart\usart_3.h)(0x5A5B0688)
 I (..\USER\stm32f10x.h)(0x5710FC40)
 I (..\CORE\core_cm3.h)(0x5710FC3E)

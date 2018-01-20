@@ -36,8 +36,8 @@ void TIM5_Init(void)                         //定时器初始化，步进电机的定时器
   NVIC_Init(&NVIC_InitStructure);
 	
 	//PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 6000000)-1;
-  TIM_TimeBaseStructure.TIM_Period = 10000-1;//100us
-  TIM_TimeBaseStructure.TIM_Prescaler = 7200-1;
+  TIM_TimeBaseStructure.TIM_Period = 100-1;//100us
+  TIM_TimeBaseStructure.TIM_Prescaler = 72-1;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
@@ -45,7 +45,7 @@ void TIM5_Init(void)                         //定时器初始化，步进电机的定时器
 
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = 5000-1;
+  TIM_OCInitStructure.TIM_Pulse = 50-1;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
   TIM_OC3Init(TIM5, &TIM_OCInitStructure);
@@ -78,8 +78,8 @@ void TIM8_Init(void)                         //定时器初始化，步进电机的定时器
 
 	
 	//PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 6000000)-1;
-  TIM_TimeBaseStructure.TIM_Period = 10000-1;//100us
-  TIM_TimeBaseStructure.TIM_Prescaler = 7200-1;
+  TIM_TimeBaseStructure.TIM_Period = 100-1;//100us
+  TIM_TimeBaseStructure.TIM_Prescaler = 72-1;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;//重复计数设置   高级定时器必须
@@ -88,7 +88,7 @@ void TIM8_Init(void)                         //定时器初始化，步进电机的定时器
 	
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = 5000-1;
+  TIM_OCInitStructure.TIM_Pulse = 50-1;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	
 	//以下为高级定时器必须
@@ -137,8 +137,8 @@ void TIM1_Init(void)                         //定时器初始化，步进电机的定时器
 
 	
 	//PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 6000000)-1;
-  TIM_TimeBaseStructure.TIM_Period = 10000-1;//100us
-  TIM_TimeBaseStructure.TIM_Prescaler = 7200-1;
+  TIM_TimeBaseStructure.TIM_Period = 80-1;//100us
+  TIM_TimeBaseStructure.TIM_Prescaler = 72-1;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;//重复计数设置   高级定时器必须
@@ -148,7 +148,7 @@ void TIM1_Init(void)                         //定时器初始化，步进电机的定时器
 
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = 5000-1;
+  TIM_OCInitStructure.TIM_Pulse = 40-1;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	//以下为高级定时器必须
 	TIM_OCInitStructure.TIM_OutputNState= TIM_OutputNState_Enable;
@@ -205,7 +205,7 @@ void step_motor_1(long num)//dir=0,向左，负的
 		step_spot_1+=num;
 		GPIO_ResetBits(GPIOA,GPIO_Pin_3);				
 	}
-	else
+	else  if(num>0)
 	{
 		step_num_1=num;
 		step_spot_1+=num;
@@ -228,13 +228,38 @@ void step_motor_2(long num)//dir=0,向左，负的
 		step_spot_2+=num;
 		GPIO_ResetBits(GPIOC,GPIO_Pin_7);				
 	}
-	else
+	else if(num>0)
 	{
 		step_num_2=num;
 		step_spot_2+=num;
 		GPIO_SetBits(GPIOC,GPIO_Pin_7);
 	}
 	TIM_Cmd(TIM8, ENABLE);
+	//TIM3_Init();
+	
+}
+
+void step_motor_3(long num)//dir=0,向左，负的
+{
+	
+	unlimit_flag_3=0;
+
+	if(num<0)
+	{
+		GPIO_ResetBits(GPIOA,GPIO_Pin_7);	
+		TIM_Cmd(TIM1, ENABLE);		
+	}
+	else if(num>0)
+	{
+
+		GPIO_SetBits(GPIOA,GPIO_Pin_7);
+		TIM_Cmd(TIM1, ENABLE);
+	}
+	else
+	{
+		 TIM_Cmd(TIM1, DISABLE);//关闭PWM波
+	}
+	
 	//TIM3_Init();
 	
 }
@@ -258,8 +283,7 @@ void unlimit_step_3(void)
 {
 	unlimit_flag_3=1;
 	GPIO_ResetBits(GPIOA,GPIO_Pin_7);	//复位方向
-	TIM1_Init();
-	
+	TIM1_Init();	
 }
 
 void TIM5_IRQHandler(void)                      //控制中断
@@ -271,7 +295,7 @@ void TIM5_IRQHandler(void)                      //控制中断
 		
 		     if(step_num_1<=0)
 	      	{
-			        TIM_Cmd(TIM3, DISABLE);//关闭PWM波
+			        TIM_Cmd(TIM5, DISABLE);//关闭PWM波
 						 
 	        }
 	        else
@@ -292,7 +316,7 @@ void TIM8_UP_IRQHandler(void)                      //控制中断
 		
 		     if(step_num_2<=0)
 	      	{
-			        TIM_Cmd(TIM2, DISABLE);//关闭PWM波
+			        TIM_Cmd(TIM8, DISABLE);//关闭PWM波
 						 
 	        }
 	        else

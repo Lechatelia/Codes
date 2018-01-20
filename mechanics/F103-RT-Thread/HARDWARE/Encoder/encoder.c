@@ -216,7 +216,7 @@ void RCC_Configuration(void)
 }
 void Encoder_Configuration(void)
 {
-  RCC_Configuration();
+  //RCC_Configuration();
 	QEI_Init();   //码盘引脚初始化
 	Encoder_Init();  //参数初始化
 	TIM6_Int_Init();          //更新码盘参数初始化
