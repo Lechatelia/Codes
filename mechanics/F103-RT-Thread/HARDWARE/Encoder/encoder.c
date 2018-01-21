@@ -1,5 +1,7 @@
 #include "stm32f10x.h"
 #include "encoder.h"
+#include "Step_Motor.h"
+#include "math.h"
 extern 		u32 KeyValue;   //按键值
 int16_t r_now;
 TIM_TypeDef* Tim_S=TIM4;
@@ -122,14 +124,26 @@ int32_t GET_ENCODER(void)
 	  else
 			Encoders.Distance -= Int32Abs(step)*Encoders.Convert2*Encoders.dir;
 	 }
-	 if(Encoders.Distance>=period_clk)
+	
+	 //归一化处理
+	 if(Encoders.Distance>=period_clk/2)
 	 {
 		 Encoders.Distance -=period_clk;
 	 }
-	 	 if(Encoders.Distance<0)
+	 	 if(Encoders.Distance<-period_clk/2)
 	 {
 		 Encoders.Distance +=period_clk;
 	 }
+	 //步进电机3判断位置
+	 if(step_motor_3_flag)
+	 {
+		 if(fabs(step_spot_3_target-Encoders.Distance)<10)  //小于误差允许范围的话
+		 {
+			  TIM_Cmd(TIM1, DISABLE);//停止转动
+				step_motor_3_flag=0;  //开始旋转
+		 }
+	 }
+	 
 	 
 }
 void Encoder_Init(void)

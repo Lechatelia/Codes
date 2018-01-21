@@ -11,42 +11,123 @@
 #include "Servo.h"
 #include "Step_Motor.h"
 #include "exti.h"
+#include "parameters.h"
 //#include "stm32f10x.h"
+
+#define TASK 1  //调试或者任务运行
   extern int exti_flag ; 
   extern int key_number;
 /************************************************
- ALIENTEK战舰STM32开发板实验1
- 跑马灯实验 
- 技术支持：www.openedv.com
- 淘宝店铺：http://eboard.taobao.com 
- 关注微信公众平台微信号："正点原子"，免费获取STM32资料。
- 广州市星翼电子科技有限公司  
- 作者：正点原子 @ALIENTEK
+//机创比赛代码V1.0
+//搬砖人：Lechatelia
 ************************************************/
 
  
 static struct rt_thread led0_thread;//线程控制块
-static struct rt_thread led1_thread;//线程控制块
+static struct rt_thread main_task_thread;//线程控制块
 ALIGN(RT_ALIGN_SIZE)
 static rt_uint8_t rt_led0_thread_stack[1024];//线程栈 
-static rt_uint8_t rt_led1_thread_stack[1024];//线程栈 
+static rt_uint8_t main_task_thread_stack[1024];//线程栈 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////	
+//停车过程 位于出发点		未加入码盘＋步进电机3部分
+void state1()
+{
+	
+			LED3_on; 
+			step_motor_1(Distance_X_1);		//步进电机1前进Distance_X_1
+			rt_thread_delay(Distance_X_1/10);  //等待移动结束       
+			while(step_num_1>0); //确认移动结束
+			
+			DC_Motor_positive(Time_Positive);//夹持轮子
+			LED2_off;
+			rt_thread_delay(Time_Positive/10);  //等待夹持结束
+			
+			set_Servp_angle(90);   //舵机旋转90
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			LED3_on;
+			step_motor_2(Distance_Y_1);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_1/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			set_Servp_angle(0);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			LED3_on; 
+			step_motor_1(Distance_X_2);		//步进电机1前进Distance_X_1
+			rt_thread_delay(Distance_X_2/10);  //等待移动结束       
+			while(step_num_1>0); //确认移动结束
+			
+			set_Servp_angle(90);   //舵机旋转90
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			//进入车库
+			LED3_on;
+			step_motor_2(Distance_Y_2);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			//到达目的地
+			
+			//回到停放处
+			DC_Motor_negative(Time_Negative);//松开轮子
+			LED2_on;
+			rt_thread_delay(Time_Positive/10);  //等待夹持结束
+			
+			LED3_on;
+			step_motor_2(-Distance_Y_2);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			set_Servp_angle(0);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			LED3_on;
+			step_motor_1(Distance_X_2+Distance_X_1);		//步进电机1前进Distance_X_1
+			rt_thread_delay((Distance_X_1+Distance_X_2)/10);  //等待移动结束       
+			while(step_num_1>0); //确认移动结束
+			
+			set_Servp_angle(90);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			LED3_on;
+			step_motor_2(-Distance_Y_1);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_1/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+
+
+
+//理论已经回到出发点
+}
+
 
 //线程LED0
 static void led0_thread_entry(void* parameter)
 {
 	while(1)
 	{
-		LED0=0;  
+		LED1_on;
 		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
         
-		LED0=1;  
-		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
-
-
+		LED1_off;  
+		rt_thread_delay(RT_TICK_PER_SECOND/2);   
+ 		
+#if TASK
+    
+		
+#else    //平时调试模块代码
 		  if(exti_flag==1)
 			{
 				exti_flag=0;
-				switch(key_number)            //步进电机+舵机测试代码，变量通过按键更改
+				switch(key_number)            //变量通过按键更改
 					{
 						case 0:
 							step_motor_1(10);
@@ -59,6 +140,7 @@ static void led0_thread_entry(void* parameter)
 							step_motor_1(32000);
 							step_motor_2(32000);
 							step_motor_3(1);
+							//step_motor_3_work(1,500);  //此函数需要配合码盘使用
 							set_Servp_angle(0);
 							setspeed_motor1(backward,99,50000);
 							break;
@@ -74,27 +156,54 @@ static void led0_thread_entry(void* parameter)
 							break;
 					}
 			}
+	#endif
 		}
 }
 
 //线程LED1
-static void led1_thread_entry(void* parameter)
+static void main_task_thread_entry(void* parameter)
 {
-	while(1)
-	{
-		LED1=0;  
-		//delay_ms(1000);
-		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
-        
-		LED1=1;  
-	  //delay_ms(1000);		
-		rt_thread_delay(RT_TICK_PER_SECOND/2);                //延时 
-		
-		
-	}
+	#if TASK
+	
+	
+	   while(unlimit_flag_1||unlimit_flag_2)   //等待步进电机复位
+			{
+			LED2_on;
+			rt_thread_delay(RT_TICK_PER_SECOND);                 
+			}
+			
+	     state1();   //停车线程函数
+			
+			
+			
+			
+			while(1)    
+			{
+			LED4_on;
+			rt_thread_delay(RT_TICK_PER_SECOND);                //延时 
+					
+			LED4_off;  
+			rt_thread_delay(RT_TICK_PER_SECOND);	
+			}
+			
+	#else     //调试模块代码
+		while(1)
+			{
+			LED2_on;
+			rt_thread_delay(RT_TICK_PER_SECOND);                //延时 
+					
+			LED2_off;  
+			rt_thread_delay(RT_TICK_PER_SECOND);	
+			}
+	#endif
 }
 
 
+
+
+//////////////////////////////////////////////////////////////////////////////////	 
+//主程序								  
+////////////////////////////////////////////////////////////////////////////////// 
 int main(void)
 {  
 		RCC_Configuration();    //高速时钟的启用需要放在前面，不然后面uart3的时序会发生紊乱
@@ -121,16 +230,16 @@ int main(void)
 				   
     rt_thread_startup(&led0_thread);             
 				   
-	rt_thread_init(&led1_thread,              		//线程控制块
-                   "led1",                   		//线程名字，在shell里面可以看到
-                   led1_thread_entry,        		//线程入口函数
+	rt_thread_init(&main_task_thread,              		//线程控制块
+                   "main_task",                   		//线程名字，在shell里面可以看到
+                   main_task_thread_entry,        		//线程入口函数
                    RT_NULL,                     	//线程入口函数参数
-                   &rt_led1_thread_stack[0], 		//线程栈起始地址
-                   sizeof(rt_led1_thread_stack),  	//线程栈大小
+                   &main_task_thread_stack[0], 		//线程栈起始地址
+                   sizeof(main_task_thread_stack),  	//线程栈大小
                    2,    //线程的优先级
                    20);         				   
 
-	rt_thread_startup(&led1_thread);  
+	rt_thread_startup(&main_task_thread);  
    
 }
 

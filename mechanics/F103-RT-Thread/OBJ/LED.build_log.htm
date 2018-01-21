@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.22.0.0
 Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Le Chatelia, xjtu, LIC=NQQ8T-R0K99-Q0PNJ-UX3L4-7QG61-XG0PR
+License Information: Lechatelia Zhu, XJTU, LIC=65IBS-LI3RP-3YYVY-I3YWV-HPE1D-QXZKN
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.22
@@ -21,15 +21,15 @@ Target DLL:      Segger\JL2CM3.dll V2.99.23.0
 Dialog DLL:      TARMSTM.DLL V1.66.0.0
  
 <h2>Project:</h2>
-E:\GIT\Codes\mechanics\F103-RT-Thread\USER\Template.uvprojx
-Project File Date:  01/20/2018
+F:\Git\Codes\mechanics\F103-RT-Thread\USER\Template.uvprojx
+Project File Date:  01/21/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Template'
-compiling main.c...
+compiling encoder.c...
 linking...
-Program Size: Code=23652 RO-data=640 RW-data=336 ZI-data=4448  
+Program Size: Code=24184 RO-data=640 RW-data=344 ZI-data=4448  
 FromELF: creating hex file...
 "..\OBJ\LED.axf" - 0 Error(s), 0 Warning(s).
 
@@ -42,30 +42,30 @@ Package Vendor: rt-thread
    * Component: kernel Version: 2.1.2
 
 <h2>Collection of Component include folders:</h2>
-  E:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS
-  E:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template
+  F:\Git\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS
+  F:\Git\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template
   D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
   D:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: rt-thread.RT-Thread::RTOS:kernel:2.1.2
-      Include file:  bsp\rtconfig.h
-      Source file:   src\components.c
-      Source file:   src\device.c
-      Source file:   src\irq.c
-      Source file:   src\clock.c
-      Source file:   bsp\board.c
+      Source file:   src\thread.c
+      Source file:   src\timer.c
       Source file:   src\idle.c
       Source file:   src\ipc.c
       Source file:   src\kservice.c
+      Source file:   src\mem.c
+      Include file:  bsp\rtconfig.h
+      Source file:   src\object.c
+      Source file:   src\components.c
+      Source file:   src\device.c
+      Source file:   src\clock.c
+      Source file:   src\irq.c
+      Source file:   bsp\board.c
+      Source file:   src\scheduler.c
       Source file:   libcpu\arm\cortex-m3\cpuport.c
       Source file:   libcpu\arm\cortex-m3\context_rvds.S
-      Source file:   src\thread.c
-      Source file:   src\object.c
-      Source file:   src\mem.c
-      Source file:   src\timer.c
-      Source file:   src\scheduler.c
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

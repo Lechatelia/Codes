@@ -3,13 +3,15 @@
 #include "led.h"
 
 
-int step_num_1=0;//²½½øµç»ú²½Êı
-int step_num_2=0;//²½½øµç»ú²½Êı
-u8 unlimit_flag_1=0;
+long step_num_1=0;//²½½øµç»ú»¹ĞèÒª×ßµÄ²½Êı
+long step_num_2=0;//²½½øµç»ú»¹ĞèÒª×ßµÄ²½Êı
+u8 unlimit_flag_1=0; //ÊÇ·ñ¸´Î»
 u8 unlimit_flag_2=0;
 u8 unlimit_flag_3=0;
-long step_spot_1=0;//²½½øµç»úµ±Ç°Î»ÖÃ
+long step_spot_1=0;//²½½øµç»úµ±Ç°Î»ÖÃ  Ïà¶ÔÓÚ¸´Î»Áãµã
 long step_spot_2=0;//²½½øµç»úµ±Ç°Î»ÖÃ
+long step_spot_3_target=0;//²½½øµç»úµ±Ç°Î»ÖÃ
+int step_motor_3_flag=0;//²½½øµç»ú3ÕıÔÚ¹¤×÷£¬ĞèÒªÅĞ¶ÏÎ»ÖÃ
 //PA2 TIM5-CH3
 void TIM5_Init(void)                         //¶¨Ê±Æ÷³õÊ¼»¯£¬²½½øµç»úµÄ¶¨Ê±Æ÷
 {
@@ -196,7 +198,7 @@ void step_dir_init(void)//²½½øµç»úµÄÉèÖÃ£¬²½½øµç»ú¿ØÖÆ°üº¬·½Ïò£¬PWMÂö³åÊä³ö£¬¹²Ò
 void step_motor_1(long num)//dir=0,Ïò×ó£¬¸ºµÄ
 {
 	
-	unlimit_flag_1=0;
+	
 	step_num_1=num;
 
 	if(num<0)
@@ -219,7 +221,6 @@ void step_motor_1(long num)//dir=0,Ïò×ó£¬¸ºµÄ
 void step_motor_2(long num)//dir=0,Ïò×ó£¬¸ºµÄ
 {
 	
-	unlimit_flag_2=0;
 	step_num_2=num;
 
 	if(num<0)
@@ -263,6 +264,13 @@ void step_motor_3(long num)//dir=0,Ïò×ó£¬¸ºµÄ
 	
 	//TIM3_Init();
 	
+}
+
+void step_motor_3_work(long num,double place)//dir=0,Ïò×ó£¬¸ºµÄ
+{
+  step_motor_3(num);
+  step_spot_3_target=place;
+	step_motor_3_flag=1;  //¿ªÊ¼Ğı×ª
 }
 
 void unlimit_step_1(void)

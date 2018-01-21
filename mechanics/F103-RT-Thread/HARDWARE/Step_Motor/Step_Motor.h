@@ -11,6 +11,16 @@
 #define DIR_ZHENG_2 GPIOA->BSRR = GPIO_Pin_3    
 #define DIR_FAN_2 	GPIOA->BRR  = GPIO_Pin_3
 
+extern long step_num_1;
+extern long step_spot_1;
+extern long step_num_2;
+extern long step_spot_2;
+extern u8 unlimit_flag_1; //ÊÇ·ñ¸´Î»
+extern u8 unlimit_flag_2;
+extern u8 unlimit_flag_3;
+extern long step_spot_3_target;
+extern int step_motor_3_flag;
+
 // void dianji_1(float m,int v);
 // void dianji_2(float m,int v);
 // void Step_Motor_Init();

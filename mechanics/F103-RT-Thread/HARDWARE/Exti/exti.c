@@ -5,10 +5,7 @@
 #include "motor.h"
 
 
-extern long step_num_1;
-extern long step_spot_1;
-extern long step_num_2;
-extern long step_spot_2;
+
 int exti_flag=0;       //刚刚产生中断
 int key_number=0; //用于调试
 //extern int flag ;
@@ -132,12 +129,12 @@ void EXTI3_IRQHandler(void)
 	{
 	///	delay_ms(10);
 		if(K_DOWN==0)
-		{
+		{   
+						unlimit_flag_2=0;
 		        TIM_Cmd(TIM8, DISABLE);
 			     // LED2_on;
 		        step_num_2=0;//置电机步数为0
 		        step_spot_2=0;//电机的坐标为0
-						LED3_off;
 		}
 		
 	}
@@ -156,14 +153,13 @@ void EXTI2_IRQHandler(void)
 	{
 	//	delay_ms(10);
 		if(K_LEFT==0)
-		{
+		{   unlimit_flag_1=0;
 			  TIM_Cmd(TIM5, DISABLE);
 			    //  LED1_on;
 		        step_num_1=0;//置电机步数为0
 		        step_spot_1=0;//电机的坐标为0
 //				if(flag==0)
 //					flag=1;
-				LED3_on;
 		}
 		
 	}
@@ -177,7 +173,7 @@ void EXTI2_IRQHandler(void)
 * 输    出         : 无
 *******************************************************************************/
 void EXTI4_IRQHandler(void)
-{   int i;
+{  
 	if(EXTI_GetITStatus(EXTI_Line4)==1&&exti_flag==0) //如果按键信息未处理则不进入
 	{
 	//	delay_ms(10);

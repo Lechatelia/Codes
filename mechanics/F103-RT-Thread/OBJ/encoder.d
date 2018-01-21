@@ -29,3 +29,7 @@
 ..\obj\encoder.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\encoder.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\encoder.o: ..\HARDWARE\Encoder\encoder.h
+..\obj\encoder.o: ..\HARDWARE\Step_Motor\Step_Motor.h
+..\obj\encoder.o: ..\SYSTEM\delay\delay.h
+..\obj\encoder.o: ..\SYSTEM\sys\sys.h
+..\obj\encoder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

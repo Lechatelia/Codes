@@ -3,7 +3,7 @@
 #include "stm32f10x.h"
 
 #define ENC_PPR 512
-#define period_clk 5000    //初步估计一圈大约1780大约
+#define period_clk 1630    //初步估计一圈大约1780大约
 extern struct Encoder_Stat Encoders;
 	struct Encoder_Stat
 {	

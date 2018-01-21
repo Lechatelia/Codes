@@ -13,4 +13,6 @@ void GPIO_init_motor(void);
 void PWM_init_motor( void); 
 void DC_Motor_init_motor(void);
 void setspeed_motor1(enum Motor_Dir dir,int speed ,long number);
- void TIM7_delay_1ms(void) ;
+void DC_Motor_positive( long number) ;
+void DC_Motor_negative( long number) ;
+void TIM7_delay_1ms(void) ;

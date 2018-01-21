@@ -39,8 +39,8 @@
 ..\obj\main.o: ..\HARDWARE\Encoder\encoder.h
 ..\obj\main.o: ..\HARDWARE\DC_Motor\motor.h
 ..\obj\main.o: D:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include\rtthread.h
-..\obj\main.o: E:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS\rtconfig.h
-..\obj\main.o: E:\GIT\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template\RTE_Components.h
+..\obj\main.o: F:\Git\Codes\mechanics\F103-RT-Thread\USER\RTE\RTOS\rtconfig.h
+..\obj\main.o: F:\Git\Codes\mechanics\F103-RT-Thread\USER\RTE\_Template\RTE_Components.h
 ..\obj\main.o: D:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include\rtdebug.h
 ..\obj\main.o: D:\Keil_v5\ARM\PACK\rt-thread\rtthread\2.1.1\include\rtdef.h
 ..\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
@@ -50,3 +50,4 @@
 ..\obj\main.o: ..\HARDWARE\Servo\Servo.h
 ..\obj\main.o: ..\HARDWARE\Step_Motor\Step_Motor.h
 ..\obj\main.o: ..\HARDWARE\Exti\exti.h
+..\obj\main.o: parameters.h
