@@ -11,12 +11,13 @@ USART_DR Offset   0x04
 */
 
 #define USART1_DR_Address ((u32)0x40013804)     //USART1-DR 地址
-#define RxBufferSize_1 10
+#define RxBufferSize_1 1
 __IO u8 USART1_RxBuffer[RxBufferSize_1];
 
 #define TxBufferSize_1 8
 u8 USART1_TxBuffer[TxBufferSize_1]={0x12,0x34,0x56,0x78,0X90,0xab,0xcd,0xef};
 
+extern uint8_t Task_queue;//需要运行程序编号 0x00代表目前处于空余状态
 
 void USART1_DMA_Init(void)
 {
@@ -87,6 +88,7 @@ void DMA1_Channel5_IRQHandler(void)
 	if(DMA_GetITStatus(DMA1_IT_GL5))
 	{
 		DMA_ClearITPendingBit(DMA1_IT_GL5);
+		Task_queue=USART1_RxBuffer[0];
 		USART1_Sendstring(USART1_TxBuffer,TxBufferSize_1);
 
 	}

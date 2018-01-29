@@ -17,6 +17,9 @@
 #define TASK 0//调试或者任务运行1 or 0
   extern int exti_flag ; 
   extern int key_number;
+	
+uint8_t Task_queue=0x01;//需要运行程序编号 0x00代表目前处于空余状态
+uint8_t Task_state=0x00;//当前程序运行状态 0x00代表目前处于空余状态
 /************************************************
 //机创比赛代码V1.0
 //搬砖人：Lechatelia
@@ -32,9 +35,10 @@ static rt_uint8_t main_task_thread_stack[1024];//线程栈
 
 
 //////////////////////////////////////////////////////////////////////////////////	
-//停车过程 位于出发点		未加入码盘＋步进电机3部分
+//停车过程 复位点出发	
 void state1()
 {
+	    step_motor_3_work(1,0); //步进电机开始旋转到0度，便于进入车库
 	
 	    step_motor_2(Distance_Y_0);   //步进电机2前进Distance_Y_0
 			rt_thread_delay(Distance_Y_0/10);  //为了防止此时挂着开关2
@@ -70,6 +74,8 @@ void state1()
 			rt_thread_delay(RT_TICK_PER_SECOND/2);
 			
 			//进入车库
+			while(step_motor_3_flag);//进入车库前判断步进电机三是否在旋转
+			
 			LED3_on;
 			step_motor_2(Distance_Y_2);   //步进电机2前进Distance_Y_1
 			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
@@ -80,7 +86,7 @@ void state1()
 			//回到停放处
 			DC_Motor_negative(Time_Negative);//松开轮子
 			LED2_on;
-			rt_thread_delay(Time_Positive/10);  //等待夹持结束
+			rt_thread_delay(Time_Negative/10);  //等待松开结束
 			
 			LED3_on;
 			step_motor_2(-Distance_Y_2);   //步进电机2前进Distance_Y_1
@@ -91,9 +97,11 @@ void state1()
 			LED3_off;
 			rt_thread_delay(RT_TICK_PER_SECOND/2);
 			
+			  step_motor_3_work(1,500); //电机旋转一定角度便于下次的再次进入
+			
 			LED3_on;
 			step_motor_1(-Distance_X_2-Distance_X_1+Distance_X_0);		//步进电机1前进Distance_X_1
-			rt_thread_delay((Distance_X_1+Distance_X_2-+Distance_X_0)/10);  //等待移动结束       
+			rt_thread_delay((Distance_X_1+Distance_X_2-Distance_X_0)/10);  //等待移动结束       
 			while(step_num_1>0); //确认移动结束
 			
 			set_Servp_angle(90);   //舵机旋转0
@@ -113,6 +121,100 @@ void state1()
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////	
+//取车过程 复位点出发
+void state2()
+{
+	    step_motor_3_work(1,0); //步进电机开始旋转到0度，便于进入车库
+	
+			LED2_on;
+	    step_motor_2(Distance_Y_0);   //步进电机2前进Distance_Y_0
+			rt_thread_delay((Distance_Y_0)/10);  //为了防止此时挂着开关2
+	    while(step_num_2>0); //确认移动结束
+	
+			set_Servp_angle(90);   //舵机旋转90
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+	    
+			LED3_on;
+			step_motor_2(Distance_Y_1);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_1/10);  //等待移动结束
+			
+	
+			set_Servp_angle(0);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+	
+			LED3_on; 
+			step_motor_1(Distance_X_1+Distance_X_2);		//步进电机1前进Distance_X_1
+			rt_thread_delay((Distance_X_1+Distance_X_2)/10);  //等待移动结束       
+			while(step_num_1>0); //确认移动结束
+			
+			
+			set_Servp_angle(90);   //舵机旋转90
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+
+			
+			//进入车库
+			while(step_motor_3_flag);//进入车库前判断步进电机三是否在旋转
+	
+			LED3_on;
+			step_motor_2(Distance_Y_2);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			//到达目的地
+			
+			//回到停放处
+			DC_Motor_positive(Time_Positive);//夹持轮子
+			LED2_off;
+			rt_thread_delay(Time_Positive/10);  //等待夹持结束
+			
+			LED3_on;
+			step_motor_2(-Distance_Y_2);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			set_Servp_angle(0);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			step_motor_3_work(1,500); //电机旋转一定角度便于下次的再次进入
+			
+			LED3_on;
+			step_motor_1(-Distance_X_2);		//步进电机1前进Distance_X_1
+			rt_thread_delay(Distance_X_2/10);  //等待移动结束       
+			while(step_num_1>0); //确认移动结束
+			
+			set_Servp_angle(90);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			LED3_on;
+			step_motor_2(-Distance_Y_1);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_1/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			set_Servp_angle(0);   //舵机旋转0
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+			DC_Motor_negative(Time_Negative);//松开轮子
+			LED2_on;
+			rt_thread_delay(Time_Negative/10);  //等待松开结束
+						
+			LED3_on;
+			step_motor_1(Distance_X_1-Distance_X_0);		//步进电机1前进Distance_X_1
+			rt_thread_delay((Distance_X_1-Distance_X_0)/10);  //等待移动结束       
+			while(step_num_1>0); //确认移动结束
+
+//理论已经回到点(X_0,Y_0)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////	
 //线程LED0
 static void led0_thread_entry(void* parameter)
 {
@@ -142,7 +244,7 @@ static void led0_thread_entry(void* parameter)
 		
 		  if(exti_flag==1)
 			{
-				exti_flag=0;
+			
 				switch(key_number)            //变量通过按键更改
 					{
 						case 0:
@@ -176,6 +278,7 @@ static void led0_thread_entry(void* parameter)
 						default:
 							break;
 					}
+				exti_flag=0;
 			}
 	#endif
 		}
@@ -184,30 +287,42 @@ static void led0_thread_entry(void* parameter)
 //线程LED1
 static void main_task_thread_entry(void* parameter)
 {
-	#if TASK
+	#if TASK  //任务模式代码
 	
 	
 	   while(unlimit_flag_1||unlimit_flag_2)   //等待步进电机复位
 			{
 			LED2_on;
 			rt_thread_delay(RT_TICK_PER_SECOND);                 
-			}
-			
-	     state1();   //停车线程函数
-			
-			
-			
-			
+			}		
 			while(1)    
 			{
-			LED4_on;
-			rt_thread_delay(RT_TICK_PER_SECOND);                //延时 
-					
-			LED4_off;  
-			rt_thread_delay(RT_TICK_PER_SECOND);	
+					if(Task_state==0x00)  //当前处于任务空余状态
+					{
+						switch(Task_queue)            //变量通过按键更改
+							{
+							case 0x00:    //任务队列为空
+								break;
+							case 0x01:
+								Task_queue=0x00;  //队列清空
+								Task_state=0x01;  //is busy
+								state1();    
+								Task_state=0x00;	//is free
+								break;
+							case 0x02:
+								Task_queue=0x00;
+								Task_state=0x01;
+								state2();    
+								Task_state=0x00;
+								break;
+							default:
+									break;								
+							}
+					}
+					rt_thread_delay(RT_TICK_PER_SECOND);  //就在这里休息那么一秒钟咩！！！
 			}
 			
-	#else     //调试模块代码
+	#else     //调试模式代码
 		while(1)
 			{
 			LED2_on;
