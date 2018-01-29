@@ -127,6 +127,8 @@ void EXTI3_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line3)==1)
 	{
+		if(GPIO_ReadOutputDataBit(GPIOC,GPIO_Pin_7)!=1)//首先判断步进电机行走的方向正向能够行走
+		{	
 	///	delay_ms(10);
 		if(K_DOWN==0)
 		{   
@@ -136,6 +138,7 @@ void EXTI3_IRQHandler(void)
 		        step_num_2=0;//置电机步数为0
 		        step_spot_2=0;//电机的坐标为0
 		}
+	}
 		
 	}
 	EXTI_ClearITPendingBit(EXTI_Line3);
@@ -151,6 +154,8 @@ void EXTI2_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line2)==1)
 	{
+		if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_3)!=1)//首先判断步进电机行走的方向正向能够行走
+		{	
 	//	delay_ms(10);
 		if(K_LEFT==0)
 		{   unlimit_flag_1=0;
@@ -158,8 +163,10 @@ void EXTI2_IRQHandler(void)
 			    //  LED1_on;
 		        step_num_1=0;//置电机步数为0
 		        step_spot_1=0;//电机的坐标为0
+		      	unlimit_step_2(); 
 //				if(flag==0)
 //					flag=1;
+		}
 		}
 		
 	}

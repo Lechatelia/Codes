@@ -31,6 +31,7 @@ void step_dir_init(void);
 void step_motor_1(long num);
 void step_motor_2(long num);
 void step_motor_3(long num);
+void step_motor_3_work(long num,double place);
 void unlimit_step_1(void);
 void unlimit_step_2(void);
 void unlimit_step_3(void);

@@ -216,11 +216,11 @@ void DC_Motor_init_motor( )
 //直线电机夹持轮胎
 void DC_Motor_positive( long number) 
 {
-		setspeed_motor1(stop,50,number);
+		setspeed_motor1(forward,50,number);
 }
 
 //直线电机松开轮胎
 void DC_Motor_negative( long number) 
 {
-		setspeed_motor1(stop,50,number);
+		setspeed_motor1(backward,50,number);
 }

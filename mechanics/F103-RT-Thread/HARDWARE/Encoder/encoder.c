@@ -7,7 +7,7 @@ int16_t r_now;
 TIM_TypeDef* Tim_S=TIM4;
 uint16_t CPR;
 
-struct Encoder_Stat Encoders={0, 0, 0, 1, 1, 1,0};
+struct Encoder_Stat Encoders={0, 0, 0, 1, 1.293173, 1,0};
 void QEI_Init(void)
 {
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -16,6 +16,7 @@ void QEI_Init(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
 	CPR = (u16)ENC_PPR<<2;
+	
 	/*
 	CH1A--PA6_T3_C1      CH2A--PA0_T2_C1      CH3A--PC6_T8_C1      CH4A--PB6_T4_C1
 	CH1B--PA7_T3_C2      CH2B--PA1_T2_C2      CH3B--PC7_T8_C2      CH4B--PB7_T4_C2
@@ -29,7 +30,7 @@ void QEI_Init(void)
 	// configue CH1 & CH2 IO
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	/* configue timer */
@@ -41,10 +42,10 @@ void QEI_Init(void)
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; 
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-	TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12,TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+	TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12,TIM_ICPolarity_BothEdge, TIM_ICPolarity_BothEdge);
 	
 	TIM_ICStructInit(&TIM_ICInitStructure);
-	TIM_ICInitStructure.TIM_ICFilter = (u8)0;
+	TIM_ICInitStructure.TIM_ICFilter = (u8)6;
 	TIM_ICInit(TIM4, &TIM_ICInitStructure);
 
 	TIM_ClearFlag(TIM4, TIM_FLAG_Update);
@@ -58,7 +59,7 @@ void QEI_Init(void)
 	TIM_Cmd(TIM4, ENABLE);
 	
 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority= 2;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority= 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
@@ -103,41 +104,46 @@ void TIM4_IRQHandler(void)
 
 int32_t GET_ENCODER(void)
 {
-	int32_t temp;
+	//int32_t temp;
 // 	assert_param((i>0)&&(i<5));
-	temp = (int32_t)(	((int32_t)(r_now))*CPR + (int32_t)(Tim_S->CNT) );
-	return temp;
+	return (int32_t)(((int32_t)(r_now))*CPR + (int32_t)(Tim_S->CNT) );
+	//return temp;
 }
  void  Encoder_Update(void)
 {
 	int64_t now;
 	int32_t step;
-
-	now	= GET_ENCODER();
-	step = now-Encoders.Now;
-	if(step<2000&&step>-2000)
-	{
-		Encoders.Now = now;
-	  Encoders.Total = Encoders.Now-Encoders.Last;
-	  if (step == Int32Abs(step))
-			Encoders.Distance += Int32Abs(step)*Encoders.Convert1*Encoders.dir;
-	  else
-			Encoders.Distance -= Int32Abs(step)*Encoders.Convert2*Encoders.dir;
-	 }
 	
-	 //归一化处理
+	
+		now	= GET_ENCODER();
+		step = now-Encoders.Now;
+//	if(step<2000&&step>-2000)
+//	{
+		Encoders.Now = now;
+	 // Encoders.Total = Encoders.Now-Encoders.Last;
+//	  if (step == Int32Abs(step))
+//			Encoders.Distance += Int32Abs(step)*Encoders.Convert1*Encoders.dir;
+//	  else
+//			Encoders.Distance -= Int32Abs(step)*Encoders.Convert2*Encoders.dir;
+//	 }
+	
+	
+    Encoders.Distance += step;
+	
+//	 //归一化处理
 	 if(Encoders.Distance>=period_clk/2)
 	 {
-		 Encoders.Distance -=period_clk;
+		 Encoders.Distance =Encoders.Distance-period_clk;
 	 }
-	 	 if(Encoders.Distance<-period_clk/2)
+	 else if(Encoders.Distance<-period_clk/2)
 	 {
 		 Encoders.Distance +=period_clk;
 	 }
+
 	 //步进电机3判断位置
 	 if(step_motor_3_flag)
 	 {
-		 if(fabs(step_spot_3_target-Encoders.Distance)<10)  //小于误差允许范围的话
+		 if(abs(step_spot_3_target-Encoders.Distance)<3)  //小于误差允许范围的话
 		 {
 			  TIM_Cmd(TIM1, DISABLE);//停止转动
 				step_motor_3_flag=0;  //开始旋转
@@ -175,8 +181,8 @@ void TIM6_Int_Init(void)        //1ms一次中断
 
 	//中断优先级NVIC设置
 	NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;  //TIM3中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //先占优先级0级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;  //从优先级3级
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;  //先占优先级0级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  //从优先级3级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //初始化NVIC寄存器
 

@@ -3,7 +3,7 @@
 #include "stm32f10x.h"
 
 #define ENC_PPR 512
-#define period_clk 1630    //初步估计一圈大约1780大约
+#define period_clk 1774    //初步估计一圈大约1780大约
 extern struct Encoder_Stat Encoders;
 	struct Encoder_Stat
 {	
@@ -13,7 +13,7 @@ extern struct Encoder_Stat Encoders;
 	double 	Convert1;		//正转系数
 	double	Convert2;		//反转系数
 	int32_t dir;				//改变正反转方向（如果是需要的方向则置1，否则置-1）
-  double  Distance;
+  int32_t  Distance;
 };
 void Encoder_Update(void);
 void Encoder_Init(void);

@@ -10,7 +10,7 @@ u8 unlimit_flag_2=0;
 u8 unlimit_flag_3=0;
 long step_spot_1=0;//步进电机当前位置  相对于复位零点
 long step_spot_2=0;//步进电机当前位置
-long step_spot_3_target=0;//步进电机当前位置
+long step_spot_3_target=0;//步进电机目标位置
 int step_motor_3_flag=0;//步进电机3正在工作，需要判断位置
 //PA2 TIM5-CH3
 void TIM5_Init(void)                         //定时器初始化，步进电机的定时器
@@ -139,7 +139,7 @@ void TIM1_Init(void)                         //定时器初始化，步进电机的定时器
 
 	
 	//PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 6000000)-1;
-  TIM_TimeBaseStructure.TIM_Period = 80-1;//100us
+  TIM_TimeBaseStructure.TIM_Period = 500-1;//100us
   TIM_TimeBaseStructure.TIM_Prescaler = 72-1;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -150,7 +150,7 @@ void TIM1_Init(void)                         //定时器初始化，步进电机的定时器
 
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = 40-1;
+  TIM_OCInitStructure.TIM_Pulse = 250-1;
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	//以下为高级定时器必须
 	TIM_OCInitStructure.TIM_OutputNState= TIM_OutputNState_Enable;
@@ -171,7 +171,7 @@ void TIM1_Init(void)                         //定时器初始化，步进电机的定时器
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 	
-  TIM_Cmd(TIM1, ENABLE);
+  TIM_Cmd(TIM1, DISABLE);
 	TIM_CtrlPWMOutputs(TIM1, ENABLE);     //必须加入
 	
 }
@@ -291,7 +291,7 @@ void unlimit_step_2(void)
 void unlimit_step_3(void)
 {
 	unlimit_flag_3=1;
-	GPIO_ResetBits(GPIOA,GPIO_Pin_7);	//复位方向
+	GPIO_ResetBits(GPIOA,GPIO_Pin_7);	//初始方向
 	TIM1_Init();	
 }
 
@@ -349,6 +349,6 @@ void TIM1_UP_IRQHandler(void)                      //控制中断
  void Step_Motor_Init(void)
 {  step_dir_init();//方向控制
 	 unlimit_step_1();
-	 unlimit_step_2();
+	// unlimit_step_2();      //为了防止越位，在1复位完成之后再复位2
 	 unlimit_step_3();
 }
