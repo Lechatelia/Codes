@@ -44,6 +44,6 @@ TIM_TimeBaseInit(TIM3,&TIM_TimeBaseStructure);
 //用于舵机调角度，这里只用于舵机调整90度
 void set_Servp_angle(int angle)
 { int CCR;
-	CCR=2080-(double)angle*(880)/90;  //需要预先知道0与90度的占空比
+	CCR=2180-(double)angle*(1080)/90;  //需要预先知道0与90度的占空比
 	TIM_SetCompare1(TIM3,(int)(CCR));
 }

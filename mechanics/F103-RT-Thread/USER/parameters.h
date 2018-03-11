@@ -10,5 +10,6 @@
 #define Distance_Y_2 200000
 
 //直流电机夹持时间
-#define Time_Positive 10000
-#define Time_Negative 10000
+#define Time_start 30000
+#define Time_Positive 20000
+#define Time_Negative 20000

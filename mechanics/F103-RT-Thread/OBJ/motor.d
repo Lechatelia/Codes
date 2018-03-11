@@ -31,3 +31,4 @@
 ..\obj\motor.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\motor.o: ..\SYSTEM\delay\delay.h
 ..\obj\motor.o: ..\SYSTEM\sys\sys.h
+..\obj\motor.o: ..\USER\parameters.h

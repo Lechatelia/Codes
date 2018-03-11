@@ -1,10 +1,12 @@
 #include "motor.h"
 #include "delay.h"
+#include "parameters.h"
 
 enum Motor_Dir motor1_dir=stop; //默认停止
 int delay_flag=0;
 int DC_Motor_flag=0; //电机是否正在移动
 long dc_place=0;      //需要移动的移动位置
+long place_reset=1;      //直线电机复位
 
 void GPIO_init_motor(void)
 {
@@ -223,4 +225,13 @@ void DC_Motor_positive( long number)
 void DC_Motor_negative( long number) 
 {
 		setspeed_motor1(backward,50,number);
+}
+
+//直线电机复位
+void DC_Motor_reset( void) 
+{
+	place_reset=1;
+	DC_Motor_positive(100000);
+	while(place_reset==1);	
+  DC_Motor_negative(Time_start);//松开轮子
 }

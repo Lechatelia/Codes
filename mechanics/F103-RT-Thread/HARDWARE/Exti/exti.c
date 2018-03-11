@@ -6,9 +6,11 @@
 
 
 
+
 int exti_flag=0;       //刚刚产生中断
 int key_number=0; //用于调试
 //extern int flag ;
+extern long place_reset;      //直线电机复位
 
 /*******************************************************************************
 * 函 数 名         : KEY_Init
@@ -26,7 +28,7 @@ void KEY_Init(void)
 //	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	   //设置传输速率
 //	GPIO_Init(GPIOB,&GPIO_InitStructure);		  /* 初始化GPIO */
 	
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_3|GPIO_Pin_2|GPIO_Pin_4;
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4;
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IPU;	//上拉输入
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_Init(GPIOE,&GPIO_InitStructure);
@@ -47,19 +49,28 @@ void My_EXTI_Init(void)
 	
 	KEY_Init();         //GPIO_Init
 	
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource0);//选择GPIO管脚用作外部中断线路
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource1);//选择GPIO管脚用作外部中断线路
 	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource2);//选择GPIO管脚用作外部中断线路
 	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource3);//选择GPIO管脚用作外部中断线路
 	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource4);//选择GPIO管脚用作外部中断线路
 	//GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource0);//选择GPIO管脚用作外部中断线路
 	
 	
-//	//EXTI0 NVIC 配置
-//	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;//EXTI0中断通道
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2;//抢占优先级
-//	NVIC_InitStructure.NVIC_IRQChannelSubPriority =3;		//子优先级
-//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
-//	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
+	//EXTI0 NVIC 配置
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;//EXTI0中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2;//抢占优先级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority =2;		//子优先级
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
 	
+
+	//EXTI1 NVIC 配置
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;//EXTI0中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2;//抢占优先级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority =3;		//子优先级
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
 	
 	//EXTI2 NVIC 配置
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;//EXTI2中断通道
@@ -89,8 +100,9 @@ void My_EXTI_Init(void)
 //	EXTI_InitStructure.EXTI_Trigger=EXTI_Trigger_Rising;
 //	EXTI_InitStructure.EXTI_LineCmd=ENABLE;
 //	EXTI_Init(&EXTI_InitStructure);
-	
-	EXTI_InitStructure.EXTI_Line=EXTI_Line2|EXTI_Line3|EXTI_Line4; 
+		EXTI_ClearITPendingBit(EXTI_Line0);	
+		
+	EXTI_InitStructure.EXTI_Line=EXTI_Line0|EXTI_Line1|EXTI_Line2|EXTI_Line3|EXTI_Line4; 
 	EXTI_InitStructure.EXTI_Mode=EXTI_Mode_Interrupt;
 	EXTI_InitStructure.EXTI_Trigger=EXTI_Trigger_Falling;
 	EXTI_InitStructure.EXTI_LineCmd=ENABLE;
@@ -104,18 +116,18 @@ void My_EXTI_Init(void)
 * 输    入         : 无
 * 输    出         : 无
 *******************************************************************************/
-//void EXTI0_IRQHandler(void)
-//{
-//	if(EXTI_GetITStatus(EXTI_Line0)==1)
-//	{
-//		delay_ms(10);
-//		if(K_UP==1)
-//		{
-//			LED3_on;
-//		}	
-//	}
-//	EXTI_ClearITPendingBit(EXTI_Line0);
-//}
+void EXTI0_IRQHandler(void)
+{
+	if(EXTI_GetITStatus(EXTI_Line0)==1)
+	{
+		if(PEin(0)==0&&place_reset==1)
+		{ 
+			
+			place_reset=0;
+		}	
+	}
+	EXTI_ClearITPendingBit(EXTI_Line0);
+}
 
 /*******************************************************************************
 * 函 数 名         : EXTI3_IRQHandler
@@ -163,7 +175,7 @@ void EXTI2_IRQHandler(void)
 			    //  LED1_on;
 		        step_num_1=0;//置电机步数为0
 		        step_spot_1=0;//电机的坐标为0
-		      	unlimit_step_2(); 
+		      	unlimit_step_2();  //开始另一个复位
 //				if(flag==0)
 //					flag=1;
 		}
