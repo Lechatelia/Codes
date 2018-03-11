@@ -36,6 +36,8 @@ static rt_uint8_t main_task_thread_stack[1024];//线程栈
 void state1()
 {
 	
+			step_motor_3_work(1,0); //步进电机开始旋转到0度，便于进入车库
+
 	    step_motor_2(Distance_Y_0);   //步进电机2前进Distance_Y_0
 			rt_thread_delay(Distance_Y_0/10);  //为了防止此时挂着开关2
 			LED3_on; 
