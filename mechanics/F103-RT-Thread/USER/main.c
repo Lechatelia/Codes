@@ -14,7 +14,7 @@
 #include "parameters.h"
 //#include "stm32f10x.h"
 
-#define TASK 1//调试或者任务运行1 or 0
+#define TASK 0//调试或者任务运行1 or 0
   extern int exti_flag ; 
   extern int key_number;
 /************************************************
@@ -32,7 +32,7 @@ static rt_uint8_t main_task_thread_stack[1024];//线程栈
 
 
 //////////////////////////////////////////////////////////////////////////////////	
-//停车过程 位于出发点		未加入码盘＋步进电机3部分
+//停车过程 位于出发点	加入码盘＋步进电机3部分
 void state1()
 {
 	
@@ -160,8 +160,9 @@ static void led0_thread_entry(void* parameter)
 //							step_motor_2(32000);
 							//step_motor_3(1);
 							//	step_motor_3_work(1,500);
-//							//step_motor_3_work(1,500);  //此函数需要配合码盘使用
-							 // set_Servp_angle(0);
+//							step_motor_3_work(1,500);  //此函数需要配合码盘使用
+							  //set_Servp_angle(0);
+								set_servo_angle(90);
 						  //DC_Motor_negative(Time_Negative);//松开轮子
 							//DC_Motor_positive(Time_Positive);//夹持轮子
  							//setspeed_motor1(backward,50,50000);
@@ -170,9 +171,10 @@ static void led0_thread_entry(void* parameter)
 //							step_motor_1(-32000);
 //							step_motor_2(-32000);
 							//	step_motor_3(-1);
-							//	step_motor_3_work(1,0);
-							set_Servp_angle(90);
-					    DC_Motor_negative(Time_Negative);//松开轮子
+								//step_motor_3_work(1,0);
+							//set_Servp_angle(90);
+								set_servo_angle(0);
+					    //DC_Motor_negative(Time_Negative);//松开轮子
   						//setspeed_motor1(forward,50,50000);
 //							
 							break;
@@ -240,7 +242,9 @@ int main(void)
 	  USART3_DMA_Init();  //uart3初始化
 	  Encoder_Configuration();//码盘初始化
 	  DC_Motor_init_motor(); //直流电机初始化
+	#if TASK
 	  DC_Motor_reset();      //直线电机复位
+	#endif
 		Servo_init(1730);//舵机初始化  需注意这里需要初始化就为0度
 	
     // 创建静态线程

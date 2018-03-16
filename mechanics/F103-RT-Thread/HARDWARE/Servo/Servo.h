@@ -3,4 +3,5 @@
 void Servo_init(int ccr);
 void gpio_init(void);
 void mode_init(int ccr);
+void set_servo_angle(int angle) ;
 void set_Servp_angle(int ccr);
