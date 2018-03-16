@@ -175,7 +175,11 @@ void EXTI2_IRQHandler(void)
 			    //  LED1_on;
 		        step_num_1=0;//置电机步数为0
 		        step_spot_1=0;//电机的坐标为0
-		      	unlimit_step_2();  //开始另一个复位
+			if(unlimit_flag_2==2)
+			{
+				unlimit_step_2();  //开始另一个复位
+			}
+		      	
 //				if(flag==0)
 //					flag=1;
 		}

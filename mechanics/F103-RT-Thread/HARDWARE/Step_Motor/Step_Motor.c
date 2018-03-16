@@ -276,6 +276,7 @@ void step_motor_3_work(long num,double place)//dir=0,向左，负的
 void unlimit_step_1(void)
 {
 	unlimit_flag_1=1;
+	unlimit_flag_2=2;  //2018/3/16添加
 	GPIO_ResetBits(GPIOA,GPIO_Pin_3);	//复位方向
 	TIM5_Init();
 
@@ -351,4 +352,5 @@ void TIM1_UP_IRQHandler(void)                      //控制中断
 	 unlimit_step_1();
 	// unlimit_step_2();      //为了防止越位，在1复位完成之后再复位2
 	 unlimit_step_3();
+	step_motor_3_work(-1,-500);
 }

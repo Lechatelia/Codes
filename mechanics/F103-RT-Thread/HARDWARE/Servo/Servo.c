@@ -37,7 +37,7 @@ TIM_TimeBaseInit(TIM3,&TIM_TimeBaseStructure);
 	//设置通道1
 	TIM_OCInitStructure.TIM_OCMode=TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=2150;//设置跳变值，此时电平发生跳变    初始宽度
+	TIM_OCInitStructure.TIM_Pulse=2100;//设置跳变值，此时电平发生跳变    初始宽度
 	TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High;
 	TIM_OC1Init(TIM3,&TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM3,TIM_OCPreload_Enable);
