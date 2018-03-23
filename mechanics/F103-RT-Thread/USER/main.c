@@ -14,7 +14,7 @@
 #include "parameters.h"
 //#include "stm32f10x.h"
 
-#define TASK 1          //调试或者任务运行1 or 0
+#define TASK  1	          //调试或者任务运行1 or 0
   extern int exti_flag ; 
   extern int key_number;
 /************************************************
@@ -247,13 +247,40 @@ static void led0_thread_entry(void* parameter)
 							break;                    
 						case 1:
 							//step_motor_2(10000);  
-							step_motor_1(565000);
+							//step_motor_1(565000);
 //							step_motor_2(32000);
 							//step_motor_3(1);
 //							step_motor_3_work(1,500);  //此函数需要配合码盘使用
 							  //set_Servp_angle(0);
-								//set_servo_angle(90);
-						   step_motor_3_work(1,-500);
+						
+						
+//						while(1)
+//						{
+//							set_servo_angle(90);
+//							rt_thread_delay(RT_TICK_PER_SECOND*2); 
+//							set_servo_angle(0);
+//							rt_thread_delay(RT_TICK_PER_SECOND*2); 
+//							
+//						}
+						
+						
+			LED2_on;
+			step_motor_2(Distance_Y_1);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_1/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+	
+			set_servo_angle(90);   //舵机旋转90
+			LED3_off;
+			rt_thread_delay(RT_TICK_PER_SECOND/2);
+			
+
+			step_motor_2(Distance_Y_2);   //步进电机2前进Distance_Y_1
+			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
+			while(step_num_2>0); //确认移动结束
+			
+			
+								
+		  //step_motor_3_work(1,-500);
 		          
 						
 						 // DC_Motor_negative(Time_Negative);//松开轮子
@@ -265,7 +292,7 @@ static void led0_thread_entry(void* parameter)
 //							step_motor_1(-32000);
 //							step_motor_2(-32000);
 							//	step_motor_3(-1);
-								//step_motor_3_work(1,0);
+							//	step_motor_3_work(1,0);
 							//set_Servp_angle(90);
 							//	set_servo_angle(0);
 					   // DC_Motor_negative(Time_Negative);//松开轮子
