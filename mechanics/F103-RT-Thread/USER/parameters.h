@@ -15,3 +15,7 @@
 #define Time_start 35000
 #define Time_Positive 30000
 #define Time_Negative 30000
+
+//º–≥÷æ‡¿Î
+#define clamp_d1 0
+#define clamp_d2 90

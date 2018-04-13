@@ -434,6 +434,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\Exti\exti.c</FilePath>
             </File>
+            <File>
+              <FileName>clamp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\Servo\clamp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -12,9 +12,10 @@
 #include "Step_Motor.h"
 #include "exti.h"
 #include "parameters.h"
+#include "clamp.h"
 //#include "stm32f10x.h"
 
-#define TASK  1	          //调试或者任务运行1 or 0
+#define TASK  0	          //调试或者任务运行1 or 0
   extern int exti_flag ; 
   extern int key_number;
 /************************************************
@@ -251,41 +252,10 @@ static void led0_thread_entry(void* parameter)
 //							step_motor_2(32000);
 							//step_motor_3(1);
 //							step_motor_3_work(1,500);  //此函数需要配合码盘使用
-							  //set_Servp_angle(0);
-						
-						
-//						while(1)
-//						{
-//							set_servo_angle(90);
-//							rt_thread_delay(RT_TICK_PER_SECOND*2); 
-//							set_servo_angle(0);
-//							rt_thread_delay(RT_TICK_PER_SECOND*2); 
-//							
-//						}
-						
-						
-			LED2_on;
-			step_motor_2(Distance_Y_1);   //步进电机2前进Distance_Y_1
-			rt_thread_delay(Distance_Y_1/10);  //等待移动结束
-			while(step_num_2>0); //确认移动结束
-	
-			set_servo_angle(90);   //舵机旋转90
-			LED3_off;
-			rt_thread_delay(RT_TICK_PER_SECOND/2);
-			
-
-			step_motor_2(Distance_Y_2);   //步进电机2前进Distance_Y_1
-			rt_thread_delay(Distance_Y_2/10);  //等待移动结束
-			while(step_num_2>0); //确认移动结束
-			
-			
-								
-		  //step_motor_3_work(1,-500);
-		          
-						
-						 // DC_Motor_negative(Time_Negative);//松开轮子
-						//	DC_Motor_positive(Time_Positive);//夹持轮子
+							  //set_Servp_angle(0);					
+		           //step_motor_3_work(1,-500);
  							//setspeed_motor1(backward,50,50000);
+						//  set_clamp_distance(clamp_d1) ;
 							break;
 						case 2:
 							//step_motor_1(10000);  
@@ -297,6 +267,7 @@ static void led0_thread_entry(void* parameter)
 							//	set_servo_angle(0);
 					   // DC_Motor_negative(Time_Negative);//松开轮子
   						//setspeed_motor1(forward,50,50000);
+						 // set_clamp_distance(clamp_d2) ;
 //							
 							break;
 						default:
@@ -363,14 +334,10 @@ int main(void)
 	  USART3_DMA_Init();  //uart3初始化
 	  Encoder_Configuration();//码盘初始化
 	  
-	  DC_Motor_init_motor(); //直流电机初始化
-	  //DC_Motor_reset();      //直线电机复位
-	Servo_init(1730);//舵机初始化  需注意这里需要初始化就为0度
-	#if TASK
-		step_motor_3_work(-1,500);
-	  DC_Motor_reset();      //直线电机复位
-	#endif
-	
+
+	 Servo_init(1730);//舵机初始化  需注意这里需要初始化就为0度
+	 clamp_init(2000); //夹持装置初始化 主要初始化角度
+
     // 创建静态线程
     rt_thread_init(&led0_thread,              		//线程控制块
                    "led0",                    		//线程名字，在shell里面可以看到
