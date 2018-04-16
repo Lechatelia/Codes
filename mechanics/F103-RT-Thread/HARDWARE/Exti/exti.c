@@ -118,13 +118,29 @@ void My_EXTI_Init(void)
 *******************************************************************************/
 void EXTI0_IRQHandler(void)
 {
-	if(EXTI_GetITStatus(EXTI_Line0)==1)
+	
+	
+		if(EXTI_GetITStatus(EXTI_Line0)==1)
 	{
-		if(PEin(0)==0&&place_reset==1)
-		{ 
-			
-			place_reset=0;
-		}	
+		if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_3)!=1)//首先判断步进电机行走的方向正向能够行走
+		{	
+	//	delay_ms(10);
+		if(PEin(0)==0)
+		{   unlimit_flag_1=0;
+			  TIM_Cmd(TIM5, DISABLE);
+			    //  LED1_on;
+		        step_num_1=0;//置电机步数为0
+		        step_spot_1=0;//电机的坐标为0
+			if(unlimit_flag_2==2)
+			{
+				unlimit_step_2();  //开始另一个复位
+			}
+		      	
+//				if(flag==0)
+//					flag=1;
+		}
+		}
+		
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0);
 }
@@ -166,46 +182,46 @@ void EXTI2_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line2)==1)
 	{
-		if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_3)!=1)//首先判断步进电机行走的方向正向能够行走
-		{	
-	//	delay_ms(10);
-		if(K_LEFT==0)
-		{   unlimit_flag_1=0;
-			  TIM_Cmd(TIM5, DISABLE);
-			    //  LED1_on;
-		        step_num_1=0;//置电机步数为0
-		        step_spot_1=0;//电机的坐标为0
-			if(unlimit_flag_2==2)
-			{
-				unlimit_step_2();  //开始另一个复位
-			}
-		      	
-//				if(flag==0)
-//					flag=1;
-		}
-		}
-		
-	}
-	EXTI_ClearITPendingBit(EXTI_Line2);
-}
+//		if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_3)!=1)//首先判断步进电机行走的方向正向能够行走
+//		{	
+//	//	delay_ms(10);
+//		if(K_LEFT==0)
+//		{   unlimit_flag_1=0;
+//			  TIM_Cmd(TIM5, DISABLE);
+//			    //  LED1_on;
+//		        step_num_1=0;//置电机步数为0
+//		        step_spot_1=0;//电机的坐标为0
+//			if(unlimit_flag_2==2)
+//			{
+//				unlimit_step_2();  //开始另一个复位
+//			}
+//		      	
+////				if(flag==0)
+////					flag=1;
+//		}
+//		}
+//		
+//	}
+//	EXTI_ClearITPendingBit(EXTI_Line2);
+//}
 
-/*******************************************************************************
-* 函 数 名         : EXTI4_IRQHandler
-* 函数功能		   : 外部中断4函数
-* 输    入         : 无
-* 输    出         : 无
-*******************************************************************************/
-void EXTI4_IRQHandler(void)
-{  
-	if(EXTI_GetITStatus(EXTI_Line4)==1&&exti_flag==0) //如果按键信息未处理则不进入
-	{
-	//	delay_ms(10);
-		if(K_RIGHT==0)
-		{
-      key_number=(key_number+1)%3;
-			exti_flag=1;
+///*******************************************************************************
+//* 函 数 名         : EXTI4_IRQHandler
+//* 函数功能		   : 外部中断4函数
+//* 输    入         : 无
+//* 输    出         : 无
+//*******************************************************************************/
+//void EXTI4_IRQHandler(void)
+//{  
+//	if(EXTI_GetITStatus(EXTI_Line4)==1&&exti_flag==0) //如果按键信息未处理则不进入
+//	{
+//	//	delay_ms(10);
+//		if(K_RIGHT==0)
+//		{
+//      key_number=(key_number+1)%3;
+//			exti_flag=1;
 
-		}
+//		}
 		
 	}
 	EXTI_ClearITPendingBit(EXTI_Line4);

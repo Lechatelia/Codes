@@ -252,8 +252,10 @@ static void led0_thread_entry(void* parameter)
 //							step_motor_2(32000);
 							//step_motor_3(1);
 //							step_motor_3_work(1,500);  //此函数需要配合码盘使用
-							  //set_Servp_angle(0);					
-		           //step_motor_3_work(1,-500);
+							//  set_Servp_angle(0);
+					   // set_clamp_distance(0);
+						 //set_clamp_angle(0);
+            //step_motor_3_work(1,-500);
  							//setspeed_motor1(backward,50,50000);
 						//  set_clamp_distance(clamp_d1) ;
 							break;
@@ -264,6 +266,7 @@ static void led0_thread_entry(void* parameter)
 							//	step_motor_3(-1);
 							//	step_motor_3_work(1,0);
 							//set_Servp_angle(90);
+					   //	set_clamp_angle(90);
 							//	set_servo_angle(0);
 					   // DC_Motor_negative(Time_Negative);//松开轮子
   						//setspeed_motor1(forward,50,50000);

@@ -4,3 +4,4 @@ void clamp_init(int ccr);
 void clamp_gpio_init(void);
 void clamp_mode_init(int ccr);
 void set_clamp_distance(int distance);
+void set_clamp_angle(int dis);

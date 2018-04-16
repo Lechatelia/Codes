@@ -1,5 +1,5 @@
 #include "clamp.h"
-
+int clamp_dis=0;
 void my_clamp_delay()
 {  int i;
 	for(i=0;i<99999;i++) ;
@@ -16,7 +16,7 @@ void clamp_gpio_init()
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
 	 	
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;	
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;	
  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; 
  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
  GPIO_Init(GPIOA, &GPIO_InitStructure);	
@@ -36,7 +36,7 @@ TIM_TimeBaseInit(TIM2,&TIM_TimeBaseStructure);
 	//设置通道1
 	TIM_OCInitStructure.TIM_OCMode=TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=2100;//设置跳变值，此时电平发生跳变   
+	TIM_OCInitStructure.TIM_Pulse=1900;//设置跳变值，此时电平发生跳变   
 	TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High;
 	TIM_OC1Init(TIM2,&TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM2,TIM_OCPreload_Enable);
@@ -49,35 +49,34 @@ TIM_TimeBaseInit(TIM2,&TIM_TimeBaseStructure);
 //用于夹持装置的动作，角度化为距离信息，0-90  注意现在认为是占空比是在900到2100之间，需要调试试，还有初始电平值
 void set_clamp_distance(int distance)
 { int CCR;
-	CCR=2100-(double)distance*(900)/90;  //需要预先知道0与90度的占空比
+	CCR=1800-(double)distance*(1000)/90;  //需要预先知道0与90度的占空比
 	TIM_SetCompare1(TIM2,(int)(CCR));
 }
 
 
-////only 0 or 90
-//void set_servo_angle(int angle)
-//{
-//	int i=0;
-//	if(angle==0&&servo_angle==90)
-//	{
-//		for(i=8;i>=0;i--)
-//		{
-//			set_clamp_distance(i*10);
-//			servo_angle=i*10;
-//			my_clamp_delay();	
-//		}
-//		
-//	}
-//		else if(angle==90&&servo_angle==0)
-//	{
-//		for(i=1;i<=9;i++)
-//		{
-//			set_clamp_distance(i*10);
-//			servo_angle=i*10;
-//			my_clamp_delay();
-//			
-//		}
-//	}
-//		
-//}
-
+//only 0 or 90
+void set_clamp_angle(int dis)
+{
+	int i=0;
+	if(dis==0&&clamp_dis==90)
+	{
+		for(i=8;i>=0;i--)
+		{
+			set_clamp_distance(i*10);
+			clamp_dis=i*10;
+			my_clamp_delay();	
+		}
+		
+	}
+		else if(dis==90&&clamp_dis==0)
+	{
+		for(i=1;i<=9;i++)
+		{
+			set_clamp_distance(i*10);
+			clamp_dis=i*10;
+			my_clamp_delay();
+			
+		}
+	}
+		
+}

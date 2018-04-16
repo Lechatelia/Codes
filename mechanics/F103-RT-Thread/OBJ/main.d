@@ -51,3 +51,4 @@
 ..\obj\main.o: ..\HARDWARE\Step_Motor\Step_Motor.h
 ..\obj\main.o: ..\HARDWARE\Exti\exti.h
 ..\obj\main.o: parameters.h
+..\obj\main.o: ..\HARDWARE\Servo\clamp.h

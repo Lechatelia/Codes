@@ -37,7 +37,7 @@ TIM_TimeBaseInit(TIM3,&TIM_TimeBaseStructure);
 	//设置通道1
 	TIM_OCInitStructure.TIM_OCMode=TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse=2100;//设置跳变值，此时电平发生跳变    初始宽度
+	TIM_OCInitStructure.TIM_Pulse=2050;//设置跳变值，此时电平发生跳变    初始宽度
 	TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High;
 	TIM_OC1Init(TIM3,&TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM3,TIM_OCPreload_Enable);
@@ -50,7 +50,7 @@ TIM_TimeBaseInit(TIM3,&TIM_TimeBaseStructure);
 //用于舵机调角度，这里只用于舵机调整90度
 void set_Servp_angle(int angle)
 { int CCR;
-	CCR=2100-(double)angle*(900)/90;  //需要预先知道0与90度的占空比
+	CCR=2050-(double)angle*(890)/90;  //需要预先知道0与90度的占空比
 	TIM_SetCompare1(TIM3,(int)(CCR));
 }
 
